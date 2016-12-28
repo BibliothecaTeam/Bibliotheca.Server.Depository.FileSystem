@@ -1,5 +1,4 @@
 using FluentBehave;
-using System;
 using Bibliotheca.Server.Depository.FileSystem.Api.Specs.ApiClients;
 using System.Collections.Generic;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;

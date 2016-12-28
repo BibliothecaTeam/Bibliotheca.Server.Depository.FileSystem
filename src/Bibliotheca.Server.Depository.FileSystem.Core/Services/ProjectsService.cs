@@ -95,15 +95,17 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
             }
 
             var projectIds = await _fileSystemService.GetProjectsIdsAsync();
-            if (!projectIds.Contains(project.Id))
+            if (!projectIds.Contains(projectId))
             {
                 throw new ProjectNotFoundException($"Project '{projectId}' not found.");
             }
 
-            await _fileSystemService.CreateFolderAsync(project.Id);
+            await _fileSystemService.CreateFolderAsync(projectId);
+
+            project.Id = projectId;
             var serializedProject = JsonConvert.SerializeObject(project);
 
-            await _fileSystemService.WriteTextAsync(project.Id, "configuration.json", serializedProject);
+            await _fileSystemService.WriteTextAsync(projectId, "configuration.json", serializedProject);
         }
 
         public async Task DeleteProjectAsync(string projectId)

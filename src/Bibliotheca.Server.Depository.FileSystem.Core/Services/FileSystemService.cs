@@ -33,6 +33,11 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
         public async Task<string> ReadTextAsync(string projectId, string fileUri)
         {
             string path = GetPathToFile(projectId, fileUri);
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException();
+            }
+
             var fileString = await ReadAllTextAsync(path);
             return fileString;
         }
@@ -58,12 +63,6 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
         private string GetPathToFile(string projectId, string fileUri)
         {
             string path = Path.Combine(_applicationParameters.ProjectsUrl, projectId, fileUri);
-
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException();
-            }
-
             return path;
         }
 
