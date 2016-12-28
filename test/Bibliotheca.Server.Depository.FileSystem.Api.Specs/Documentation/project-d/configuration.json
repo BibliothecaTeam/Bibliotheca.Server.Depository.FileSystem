@@ -1,0 +1,13 @@
+{
+    "Name": "Project D",
+    "Description": "Test project D",
+    "DefaultBranch": "Latest",
+    "VisibleBranches": [
+        "Latest",
+        "Release 1.0"
+    ],
+    "Tags": [
+        "TagA", "TagD"
+    ],
+    "Group": "Group B"
+}

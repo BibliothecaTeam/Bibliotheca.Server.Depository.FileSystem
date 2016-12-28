@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 using Bibliotheca.Server.Depository.FileSystem.Core.Exceptions;
@@ -22,6 +23,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
         public async Task<IList<ProjectDto>> GetProjectsAsync()
         {
             var projectIds = await _fileSystemService.GetProjectsIdsAsync();
+            projectIds = projectIds.OrderBy(x => x).ToList();
 
             var projectDtos = new List<ProjectDto>();
             foreach (var projectId in projectIds)
