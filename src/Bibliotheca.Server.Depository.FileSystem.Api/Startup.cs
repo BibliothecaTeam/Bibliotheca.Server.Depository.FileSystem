@@ -1,7 +1,7 @@
 using Bibliotheca.Server.Depository.FileSystem.Core.Parameters;
 using Bibliotheca.Server.Depository.FileSystem.Core.Services;
 using Bibliotheca.Server.Mvc.Middleware.Authorization;
-using Bibliotheca.Server.Mvc.Middleware.Diagnostics;
+using Bibliotheca.Server.Mvc.Middleware.Diagnostics.Exceptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;

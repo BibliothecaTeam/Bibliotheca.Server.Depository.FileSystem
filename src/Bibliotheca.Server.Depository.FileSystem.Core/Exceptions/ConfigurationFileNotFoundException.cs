@@ -2,9 +2,9 @@ using Bibliotheca.Server.Mvc.Middleware.Diagnostics.Exceptions;
 
 namespace Bibliotheca.Server.Depository.FileSystem.Core.Exceptions
 {
-    public class ProjectNotFoundException : NotFoundException
+    public class ConfigurationFileNotFoundException : NotFoundException
     {
-        public ProjectNotFoundException(string message) : base(message)
+        public ConfigurationFileNotFoundException(string message) : base(message)
         {
         }
     }

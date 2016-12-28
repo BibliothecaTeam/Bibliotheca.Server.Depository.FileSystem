@@ -9,3 +9,10 @@ When user wants to see all projects
 Then system returns status code Ok
     And system returns all available projects
     And projects are sorted alpabetically
+
+Scenario: List must contains only projects with correct configuration
+Given system contains projects
+    And project "empty-project" does not have configuration file
+When user wants to see all projects
+Then system returns status code Ok
+    And system returns projects without "empty-project"

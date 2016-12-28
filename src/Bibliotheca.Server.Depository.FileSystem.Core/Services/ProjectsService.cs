@@ -47,22 +47,36 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
 
         public async Task<ProjectDto> GetProjectAsync(string projectId)
         {
-            var configurationFile = await _fileSystemService.ReadTextAsync(projectId, "configuration.json");
-            var projectDto = JsonConvert.DeserializeObject<ProjectDto>(configurationFile);
+            var projectIds = await _fileSystemService.GetProjectsIdsAsync();
+            if (!projectIds.Contains(projectId))
+            {
+                throw new ProjectNotFoundException($"Project '{projectId}' not found.");
+            }
 
-            projectDto.Id = projectId;
-            return projectDto;
+            try
+            {
+                var configurationFile = await _fileSystemService.ReadTextAsync(projectId, "configuration.json");
+                var projectDto = JsonConvert.DeserializeObject<ProjectDto>(configurationFile);
+
+                projectDto.Id = projectId;
+                return projectDto;
+            }
+            catch (FileNotFoundException)
+            {
+                _logger.LogWarning($"Project '{projectId}' doesn't have configuration file.");
+                throw new ConfigurationFileNotFoundException($"Configuration file for project '{projectId}' not found.");
+            }
         }
 
         public async Task CreateProjectAsync(ProjectDto project)
         {
-            if(string.IsNullOrWhiteSpace(project.Id))
+            if (string.IsNullOrWhiteSpace(project.Id))
             {
                 throw new ProjectIdNotSpecifiedException();
             }
 
             var projectIds = await _fileSystemService.GetProjectsIdsAsync();
-            if(projectIds.Contains(project.Id))
+            if (projectIds.Contains(project.Id))
             {
                 throw new ProjectAlreadyExistsException($"Project with id '{project.Id}' already exists.");
             }
@@ -75,13 +89,13 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
 
         public async Task UpdateProjectAsync(string projectId, ProjectDto project)
         {
-            if(string.IsNullOrWhiteSpace(projectId))
+            if (string.IsNullOrWhiteSpace(projectId))
             {
                 throw new ProjectIdNotSpecifiedException();
             }
 
             var projectIds = await _fileSystemService.GetProjectsIdsAsync();
-            if(!projectIds.Contains(project.Id))
+            if (!projectIds.Contains(project.Id))
             {
                 throw new ProjectNotFoundException($"Project '{projectId}' not found.");
             }
@@ -95,7 +109,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
         public async Task DeleteProjectAsync(string projectId)
         {
             var projectIds = await _fileSystemService.GetProjectsIdsAsync();
-            if(!projectIds.Contains(projectId))
+            if (!projectIds.Contains(projectId))
             {
                 throw new ProjectNotFoundException($"Project '{projectId}' not found.");
             }

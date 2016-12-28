@@ -25,8 +25,23 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
             ThenProjectsAreSortedAlpabetically();
         }
 
+        [Scenario("List must contains only projects with correct configuration")]
+        public async Task ListMustContainsOnlyProjectsWithCorrectConfiguration()
+        {
+            GivenSystemContainsProjects();
+            GivenProjectDoesNotHaveConfigurationFile("empty-project");
+            await WhenUserWantsToSeeAllProjects();
+            ThenSystemReturnsStatusCodeOk();
+            ThenSystemReturnsProjectsWithout("empty-project");
+        }
+
         [Given("System contains projects")]
         private void GivenSystemContainsProjects()
+        {
+        }
+
+        [Given("Project does not have configuration file")]
+        private void GivenProjectDoesNotHaveConfigurationFile(string projectId)
         {
         }
 
@@ -59,6 +74,12 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
             {
                 Assert.True(_response.Content[i -1].Id.CompareTo(_response.Content[i].Id) == -1);
             }
+        }
+
+        [Then("System returns projects without")]
+        private void ThenSystemReturnsProjectsWithout(string projectId)
+        {
+            Assert.False(_response.Content.Any(x => x.Id == projectId));
         }
     }
 }

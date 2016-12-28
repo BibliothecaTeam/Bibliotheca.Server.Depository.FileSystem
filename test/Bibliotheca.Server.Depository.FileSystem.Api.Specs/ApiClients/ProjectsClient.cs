@@ -27,5 +27,25 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.ApiClients
 
             return httpResponse;
         }
+
+        public async Task<HttpResponse<ProjectDto>> GetByIdAsync(string projectId)
+        {
+            var httpResponse = new HttpResponse<ProjectDto>();
+            var url = $"http://localhost/api/projects/{projectId}";
+            var client = ApiTestServer.Instance.CreateClient();
+            client.AddSecurityToken();
+
+            var response = await client.GetAsync(url);
+            httpResponse.StatusCode = response.StatusCode;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var deserializedObject = JsonConvert.DeserializeObject<ProjectDto>(content);
+                httpResponse.Content = deserializedObject;
+            }
+
+            return httpResponse;
+        }
     }
 }
