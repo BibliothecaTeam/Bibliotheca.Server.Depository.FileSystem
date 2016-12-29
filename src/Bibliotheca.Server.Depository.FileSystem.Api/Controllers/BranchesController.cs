@@ -1,8 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
+using Bibliotheca.Server.Depository.FileSystem.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,34 +13,46 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Controllers
     [Route("api/projects/{projectId}/branches")]
     public class BranchesController : Controller, IBranchesController
     {
-        [HttpGet]
-        public Task<IList<BranchDto>> Get(string projectId)
+        private readonly IBranchesService _branchesService;
+
+        public BranchesController(IBranchesService branchesService)
         {
-            throw new NotImplementedException();
+            _branchesService = branchesService;
+        }
+
+        [HttpGet]
+        public async Task<IList<BranchDto>> Get(string projectId)
+        {
+            var branches = await _branchesService.GetBranchesAsync(projectId);
+            return branches;
         }
 
         [HttpGet("{branchName}")]
-        public Task<BranchDto> Get(string projectId, string branchName)
+        public async Task<BranchDto> Get(string projectId, string branchName)
         {
-            throw new NotImplementedException();
+            var branch = await _branchesService.GetBranchAsync(projectId, branchName);
+            return branch;
         }
 
         [HttpPost]
-        public Task<IActionResult> Post(string projectId, [FromBody] BranchDto branch)
+        public async Task<IActionResult> Post(string projectId, [FromBody] BranchDto branch)
         {
-            throw new NotImplementedException();
+            await _branchesService.CreateBranchAsync(projectId, branch);
+            return Created($"/projects/{projectId}/branches/{branch.Name}", branch);
         }
 
         [HttpPut("{branchName}")]
-        public Task<IActionResult> Put(string projectId, string branchName, [FromBody] BranchDto branch)
+        public async Task<IActionResult> Put(string projectId, string branchName, [FromBody] BranchDto branch)
         {
-            throw new NotImplementedException();
+            await _branchesService.UpdateBranchAsync(projectId, branchName, branch);
+            return Ok();
         }
 
         [HttpDelete("{branchName}")]
-        public Task<IActionResult> Delete(string projectId, string branchName)
+        public async Task<IActionResult> Delete(string projectId, string branchName)
         {
-            throw new NotImplementedException();
+            await _branchesService.DeleteBranchAsync(projectId, branchName);
+            return Ok();
         }
     }
 }

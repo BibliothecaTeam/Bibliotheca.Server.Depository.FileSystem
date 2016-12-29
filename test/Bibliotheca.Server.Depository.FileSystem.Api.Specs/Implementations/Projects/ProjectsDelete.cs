@@ -30,6 +30,14 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
             ThenSystemReturnsStatusCodeNotFound();
         }
 
+        [Scenario("System have to return proper status code when project id not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
+        {
+            GivenSystemNotContainsProjects("");
+            await WhenUserDeletesProject("");
+            ThenSystemReturnsStatusCodeBadRequest();
+        }
+
         [Given("System contains project")]
         private async Task GivenSystemContainsProject(string projectId)
         {
@@ -77,6 +85,12 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
         private void ThenSystemReturnsStatusCodeNotFound()
         {
             Assert.Equal(HttpStatusCode.NotFound, _response.StatusCode);
+        }
+
+        [Then("System returns status code BadRequest")]
+        private void ThenSystemReturnsStatusCodeBadRequest()
+        {
+            Assert.Equal(HttpStatusCode.BadRequest, _response.StatusCode);
         }
     }
 }

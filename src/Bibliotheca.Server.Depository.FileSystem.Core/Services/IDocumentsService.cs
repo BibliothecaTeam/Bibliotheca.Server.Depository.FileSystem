@@ -7,10 +7,10 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
     {
         Task<DocumentDto> GetDocumentAsync(string projectId, string branchName, string fileUri);
 
-        Task<ActionConfirmation> CreateDocumentAsync(string projectId, string branchName, DocumentDto document);
+        Task CreateDocumentAsync(string projectId, string branchName, DocumentDto document);
 
-        Task<ActionConfirmation> UpdateDocumentAsync(string projectId, string branchName, string fileUri, DocumentDto document);
+        Task UpdateDocumentAsync(string projectId, string branchName, string fileUri, DocumentDto document);
 
-        Task<ActionConfirmation> DeleteDocumentAsync(string projectId, string branchName, string fileUri);
+        Task DeleteDocumentAsync(string projectId, string branchName, string fileUri);
     }
 }

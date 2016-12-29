@@ -1,5 +1,6 @@
 using Bibliotheca.Server.Depository.FileSystem.Core.Parameters;
 using Bibliotheca.Server.Depository.FileSystem.Core.Services;
+using Bibliotheca.Server.Depository.FileSystem.Core.Validators;
 using Bibliotheca.Server.Mvc.Middleware.Authorization;
 using Bibliotheca.Server.Mvc.Middleware.Diagnostics.Exceptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -74,7 +75,10 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
             });
 
             services.AddScoped<IFileSystemService, FileSystemService>();
+            services.AddScoped<ICommonValidator, CommonValidator>();;
             services.AddScoped<IProjectsService, ProjectsService>();
+            services.AddScoped<IBranchesService, BranchesService>();
+            services.AddScoped<IDocumentsService, DocumentsService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

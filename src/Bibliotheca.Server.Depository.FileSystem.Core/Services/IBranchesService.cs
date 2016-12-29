@@ -10,10 +10,10 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
 
         Task<BranchDto> GetBranchAsync(string projectId, string branchName);
 
-        Task<ActionConfirmation> CreateBranchAsync(BranchDto brach);
+        Task CreateBranchAsync(string projectId, BranchDto branch);
 
-        Task<ActionConfirmation> UpdateBranchAsync(string projectId, string branchName, BranchDto branch);
+        Task UpdateBranchAsync(string projectId, string branchName, BranchDto branch);
         
-        Task<ActionConfirmation> DeleteBranchAsync(string projectId, string branchName);
+        Task DeleteBranchAsync(string projectId, string branchName);
     }
 }
