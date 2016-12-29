@@ -1,7 +1,7 @@
 Feature: Creating a new project
 
     As a user I want to create new project
-    so that I can easly add new projects to system.
+    so that I can easly add new projects to the system.
 
 Scenario: Project should be successfully added
 Given system does not contains project "new-project-a"
