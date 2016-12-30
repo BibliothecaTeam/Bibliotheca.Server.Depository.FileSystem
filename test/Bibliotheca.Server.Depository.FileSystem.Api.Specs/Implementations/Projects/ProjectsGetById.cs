@@ -43,7 +43,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
         [When("User wants to see details of project")]
         private async Task WhenUserWantsToSeeDetailsOfProject(string projectId)
         {
-            var projectsClient = new HttpClient<ProjectDto>(_baseAddress);
+            var projectsClient = new RestClient<ProjectDto>(_baseAddress);
             _response = await projectsClient.GetByIdAsync(projectId);
         }
 

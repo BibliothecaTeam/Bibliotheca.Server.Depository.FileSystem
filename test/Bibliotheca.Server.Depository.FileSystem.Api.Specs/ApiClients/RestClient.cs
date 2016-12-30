@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -7,11 +8,11 @@ using Newtonsoft.Json;
 
 namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.ApiClients
 {
-    public class HttpClient<T>
+    public class RestClient<T>
     {
         private readonly string _address;
         
-        public HttpClient(string address)
+        public RestClient(string address)
         {
             _address = address;
         }

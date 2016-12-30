@@ -1,114 +1,190 @@
 using FluentBehave;
-using System;
+using Bibliotheca.Server.Depository.FileSystem.Api.Specs.ApiClients;
+using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
+using System.Threading.Tasks;
+using Xunit;
+using System.Net;
+using System.IO;
+using System.Linq;
 
 namespace test
 {
     [Feature("DocumentsPut", "Updating existing document")]
     public class DocumentsPut
     {
-        //[Scenario("Document should be successfully modified")]
-        public void DocumentShouldBeSuccessfullyModified()
+        private HttpResponse<DocumentDto> _response;
+
+        [Scenario("Document should be successfully modified")]
+        public async Task DocumentShouldBeSuccessfullyModified()
         {
-            GivenSystemContainsDocumentInBranchInProject("docs/updated-index.md", "Latest", "project-a");
-            WhenUserUpdatesDocumentInBranchInProject("docs/updated-index.md", "Latest", "project-a");
-            ThenSystemReturnsStatusCodeOk();
+            try
+            {
+                await GivenSystemContainsDocumentInBranchInProject("docs/updated-index.md", "Latest", "project-a");
+                await WhenUserUpdatesDocumentInBranchInProject("docs/updated-index.md", "Latest", "project-a");
+                ThenSystemReturnsStatusCodeOk();
+            }
+            finally
+            {
+                var httpClient = new RestClient<DocumentDto>($"http://localhost/api/projects/project-a/branches/Latest/documents");
+                var postResult = await httpClient.DeleteAsync("docs+updated-index.md");
+            }
         }
 
-        //[Scenario("System have to return proper status code when project not exists")]
-        public void SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
+        [Scenario("System have to return proper status code when project not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
         {
-            GivenSystemNotContainsProject("project-not-exists");
-            WhenUserUpdatesDocumentInBranchInProject("docs/index.md", "Latest", "project-not-exists");
+            await GivenSystemNotContainsProject("project-not-exists");
+            await WhenUserUpdatesDocumentInBranchInProject("docs/index.md", "Latest", "project-not-exists");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        //[Scenario("System have to return proper status code when branch not exists")]
-        public void SystemHaveToReturnProperStatusCodeWhenBranchNotExists()
+        [Scenario("System have to return proper status code when branch not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNotExists()
         {
-            GivenSystemNotContainsBranchInProject("branch-not-exists", "project-a");
-            WhenUserUpdatesDocumentInBranchInProject("docs/index.md", "branch-not-exists", "project-a");
+            await GivenSystemNotContainsBranchInProject("branch-not-exists", "project-a");
+            await WhenUserUpdatesDocumentInBranchInProject("docs/index.md", "branch-not-exists", "project-a");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        //[Scenario("System have to return proper status code when document not exists")]
-        public void SystemHaveToReturnProperStatusCodeWhenDocumentNotExists()
+        [Scenario("System have to return proper status code when document not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeWhenDocumentNotExists()
         {
-            GivenSystemNotContainsDocumentInBranchInProject("docs/index-not-exists.md", "Latest", "project-a");
-            WhenUserUpdatesDocumentInBranchInProject("docs/index-not-exists.md", "Latest", "project-a");
+            await GivenSystemNotContainsDocumentInBranchInProject("docs/index-not-exists.md", "Latest", "project-a");
+            await WhenUserUpdatesDocumentInBranchInProject("docs/index-not-exists.md", "Latest", "project-a");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        //[Scenario("System have to return proper status code when project id not specified")]
-        public void SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
+        [Scenario("System have to return proper status code when project id not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
         {
-            GivenSystemContainsDocumentInBranchInProject("docs/index.md", "Latest", "project-a");
-            WhenUserUpdatesDocumentInBranchInProject("docs/index.md", "Latest", "");
-            ThenSystemReturnsStatusCodeBadRequest();
+            try
+            {
+                await GivenSystemContainsDocumentInBranchInProject("docs/updated-index.md", "Latest", "project-a");
+                await WhenUserUpdatesDocumentInBranchInProject("docs/updated-index.md", "Latest", "");
+                ThenSystemReturnsStatusCodeNotFound();
+            }
+            finally
+            {
+                var httpClient = new RestClient<DocumentDto>($"http://localhost/api/projects/project-a/branches/Latest/documents");
+                var postResult = await httpClient.DeleteAsync("docs+updated-index.md");
+            }
         }
 
-        //[Scenario("System have to return proper status code when branch name not specified")]
-        public void SystemHaveToReturnProperStatusCodeWhenBranchNameNotSpecified()
+        [Scenario("System have to return proper status code when branch name not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNameNotSpecified()
         {
-            GivenSystemContainsDocumentInBranchInProject("docs/index.md", "Latest", "project-a");
-            WhenUserUpdatesDocumentInBranchInProject("docs/index.md", "", "project-a");
-            ThenSystemReturnsStatusCodeBadRequest();
+            try
+            {
+                await GivenSystemContainsDocumentInBranchInProject("docs/updated-index.md", "Latest", "project-a");
+                await WhenUserUpdatesDocumentInBranchInProject("docs/updated-index.md", "", "project-a");
+                ThenSystemReturnsStatusCodeNotFound();
+            }
+            finally
+            {
+                var httpClient = new RestClient<DocumentDto>($"http://localhost/api/projects/project-a/branches/Latest/documents");
+                var postResult = await httpClient.DeleteAsync("docs+updated-index.md");
+            }
         }
 
-        //[Scenario("System have to return proper status code when document uri not specified")]
-        public void SystemHaveToReturnProperStatusCodeWhenDocumentUriNotSpecified()
+        [Scenario("System have to return proper status code when document uri not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeWhenDocumentUriNotSpecified()
         {
-            GivenSystemContainsDocumentInBranchInProject("docs/index.md", "Latest", "project-a");
-            WhenUserUpdatesDocumentInBranchInProject("", "Latest", "project-a");
-            ThenSystemReturnsStatusCodeBadRequest();
+            try
+            {
+                await GivenSystemContainsDocumentInBranchInProject("docs/updated-index.md", "Latest", "project-a");
+                await WhenUserUpdatesDocumentInBranchInProject("", "Latest", "project-a");
+                ThenSystemReturnsStatusCodeBadRequest();
+            }
+            finally
+            {
+                var httpClient = new RestClient<DocumentDto>($"http://localhost/api/projects/project-a/branches/Latest/documents");
+                var postResult = await httpClient.DeleteAsync("docs+updated-index.md");
+            }
         }
 
         [Given("System contains document in branch in project")]
-        private void GivenSystemContainsDocumentInBranchInProject(string p0, string p1, string p2)
+        private async Task GivenSystemContainsDocumentInBranchInProject(string documentName, string branchName, string projectId)
         {
-            throw new NotImplementedException("Implement me!");
+            var documentDto = new DocumentDto
+            {
+                Name = Path.GetFileName(documentName),
+                Uri = documentName,
+                Content = GetBytes("test")
+            };
+
+            var httpClient = new RestClient<DocumentDto>($"http://localhost/api/projects/{projectId}/branches/{branchName}/documents");
+            var postResult = await httpClient.PostAsync(documentDto);
+            Assert.Equal(HttpStatusCode.Created, postResult.StatusCode);
         }
 
         [When("User updates document in branch in project")]
-        private void WhenUserUpdatesDocumentInBranchInProject(string p0, string p1, string p2)
+        private async Task WhenUserUpdatesDocumentInBranchInProject(string documentName, string branchName, string projectId)
         {
-            throw new NotImplementedException("Implement me!");
+            var encodedDocumentName = documentName.Replace("/", "+");
+
+            var documentDto = new DocumentDto
+            {
+                Name = Path.GetFileName(documentName),
+                Uri = encodedDocumentName,
+                Content = GetBytes("test")
+            };
+
+            var httpClient = new RestClient<DocumentDto>($"http://localhost/api/projects/{projectId}/branches/{branchName}/documents");
+            _response = await httpClient.PutAsync(encodedDocumentName, documentDto);
         }
 
         [Then("System returns status code Ok")]
         private void ThenSystemReturnsStatusCodeOk()
         {
-            throw new NotImplementedException("Implement me!");
+            Assert.Equal(HttpStatusCode.OK, _response.StatusCode);
         }
 
         [Given("System not contains project")]
-        private void GivenSystemNotContainsProject(string p0)
+        private async Task GivenSystemNotContainsProject(string projectId)
         {
-            throw new NotImplementedException("Implement me!");
+            var httpClient = new RestClient<ProjectDto>($"http://localhost/api/projects");
+
+            var result = await httpClient.GetAsync();
+            Assert.False(result.Content.Any(x => x.Id == projectId));
         }
 
         [Then("System returns status code NotFound")]
         private void ThenSystemReturnsStatusCodeNotFound()
         {
-            throw new NotImplementedException("Implement me!");
+            Assert.Equal(HttpStatusCode.NotFound, _response.StatusCode);
         }
 
         [Given("System not contains branch in project")]
-        private void GivenSystemNotContainsBranchInProject(string p0, string p1)
+        private async Task GivenSystemNotContainsBranchInProject(string branchName, string projectId)
         {
-            throw new NotImplementedException("Implement me!");
+            var httpClient = new RestClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
+
+            var result = await httpClient.GetAsync();
+            Assert.False(result.Content.Any(x => x.Name == branchName));
         }
 
         [Given("System not contains document in branch in project")]
-        private void GivenSystemNotContainsDocumentInBranchInProject(string p0, string p1, string p2)
+        private async Task GivenSystemNotContainsDocumentInBranchInProject(string documentName, string branchName, string projectId)
         {
-            throw new NotImplementedException("Implement me!");
+            var httpClient = new RestClient<DocumentDto>($"http://localhost/api/projects/{projectId}/branches/{branchName}/documents");
+
+            var encodedDocumentName = documentName.Replace("/", "+");
+            var response = await httpClient.GetByIdAsync(encodedDocumentName);
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Then("System returns status code BadRequest")]
         private void ThenSystemReturnsStatusCodeBadRequest()
         {
-            throw new NotImplementedException("Implement me!");
+            Assert.Equal(HttpStatusCode.BadRequest, _response.StatusCode);
         }
 
+        private byte[] GetBytes(string str)
+        {
+            byte[] bytes = new byte[str.Length * sizeof(char)];
+            System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
+            return bytes;
+        }
     }
 }

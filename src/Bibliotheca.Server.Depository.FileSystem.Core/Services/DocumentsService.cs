@@ -31,10 +31,12 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
             }
             catch (FileNotFoundException)
             {
-                throw new DocumentNotFoundException($"Document '{fileUri}' not exists in branch '{branchName}' in project '{projectId}'.");
+                throw new DocumentNotFoundException($"aaaa Document '{fileUri}' not exists in branch '{branchName}' in project '{projectId}'.");
             }
 
-            var mimeType = MimeTypeMap.GetMimeType(fileUri);
+            var extension = Path.GetExtension(fileUri);
+            var mimeType = MimeTypeMap.GetMimeType(extension);
+            
             var document = new DocumentDto
             {
                 ConentType = mimeType,

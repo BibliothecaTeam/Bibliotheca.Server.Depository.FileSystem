@@ -9,7 +9,7 @@ When user wants to see details of document "docs/index.md" in branch "Latest" in
 Then system returns status code Ok
     And document uri is equal to "docs/index.md"
     And file content is available
-    And file type is equal "file/markdown"
+    And file type is equal "text/markdown"
 
 Scenario: System have to return proper status code when project not exists
 Given system not contains project "project-not-exists"
@@ -29,12 +29,12 @@ Then system returns status code NotFound
 Scenario: System have to return proper status code when project id not specified
 Given system contains document "docs/index.md" in branch "Latest" in project "project-a"
 When user wants to see details of document "docs/index.md" in branch "Latest" in project ""
-Then system returns status code BadRequest
+Then system returns status code NotFound
 
 Scenario: System have to return proper status code when branch name not specified
 Given system contains document "docs/index.md" in branch "Latest" in project "project-a"
 When user wants to see details of document "docs/index.md" in branch "" in project "project-a"
-Then system returns status code BadRequest
+Then system returns status code NotFound
 
 Scenario: System have to return proper status code when document uri not specified
 Given system contains document "docs/index.md" in branch "Latest" in project "project-a"

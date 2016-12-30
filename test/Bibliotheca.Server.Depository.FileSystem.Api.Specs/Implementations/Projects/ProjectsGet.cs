@@ -48,7 +48,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
         [When("User wants to see all projects")]
         private async Task WhenUserWantsToSeeAllProjects()
         {
-            var projectsClient = new HttpClient<ProjectDto>(_baseAddress);
+            var projectsClient = new RestClient<ProjectDto>(_baseAddress);
             _response = await projectsClient.GetAsync();
         }
 

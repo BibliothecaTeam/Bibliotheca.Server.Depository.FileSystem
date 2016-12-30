@@ -22,6 +22,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Controllers
         [HttpGet("{fileUri}")]
         public async Task<DocumentDto> Get(string projectId, string branchName, string fileUri)
         {
+            fileUri = DecodeUrl(fileUri);
             var document = await _documentsService.GetDocumentAsync(projectId, branchName, fileUri);
             return document;
         }
@@ -29,6 +30,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(string projectId, string branchName, [FromBody] DocumentDto document)
         {
+            document.Uri = DecodeUrl(document.Uri);
             await _documentsService.CreateDocumentAsync(projectId, branchName, document);
 
             document.Content = null;
@@ -38,6 +40,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Controllers
         [HttpPut("{fileUri}")]
         public async Task<IActionResult> Put(string projectId, string branchName, string fileUri, [FromBody] DocumentDto document)
         {
+            fileUri = DecodeUrl(fileUri);
             await _documentsService.UpdateDocumentAsync(projectId, branchName, fileUri, document);
             return Ok();
         }
@@ -45,8 +48,14 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Controllers
         [HttpDelete("{fileUri}")]
         public async Task<IActionResult> Delete(string projectId, string branchName, string fileUri)
         {
+            fileUri = DecodeUrl(fileUri);
             await _documentsService.DeleteDocumentAsync(projectId, branchName, fileUri);
             return Ok();
+        }
+
+        private string DecodeUrl(string url)
+        {
+            return url.Replace("+", "/");
         }
     }
 }

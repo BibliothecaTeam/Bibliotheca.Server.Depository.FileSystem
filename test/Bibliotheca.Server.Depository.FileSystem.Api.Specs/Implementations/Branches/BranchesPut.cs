@@ -24,7 +24,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Bra
             }
             finally
             {
-                var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/project-a/branches");
+                var httpClient = new RestClient<BranchDto>($"http://localhost/api/projects/project-a/branches");
                 await httpClient.DeleteAsync("updated-branch");
             }
         }
@@ -48,7 +48,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Bra
             }
             finally
             {
-                var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/project-a/branches");
+                var httpClient = new RestClient<BranchDto>($"http://localhost/api/projects/project-a/branches");
                 await httpClient.DeleteAsync("updated-branch");
             }
         }
@@ -64,7 +64,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Bra
         [Given("System contains branch in project")]
         private async Task GivenSystemContainsBranchInProject(string branchName, string projectId)
         {
-            var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
+            var httpClient = new RestClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
             var branchDto = new BranchDto
             {
                 Name = branchName,
@@ -78,7 +78,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Bra
         [When("User updates branch in project")]
         private async Task WhenUserUpdatesBranchInProject(string branchName, string projectId)
         {
-            var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
+            var httpClient = new RestClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
             var branchDto = new BranchDto
             {
                 Name = branchName,
@@ -97,7 +97,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Bra
         [Given("System not contains project")]
         private async Task GivenSystemNotContainsProject(string projectId)
         {
-            var httpClient = new HttpClient<ProjectDto>($"http://localhost/api/projects");
+            var httpClient = new RestClient<ProjectDto>($"http://localhost/api/projects");
 
             var result = await httpClient.GetAsync();
             Assert.False(result.Content.Any(x => x.Id == projectId));
@@ -118,7 +118,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Bra
         [Given("System not contains branch in project")]
         private async Task GivenSystemNotContainsBranchInProject(string branchName, string projectId)
         {
-            var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
+            var httpClient = new RestClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
 
             var result = await httpClient.GetAsync();
             Assert.False(result.Content.Any(x => x.Name == branchName));

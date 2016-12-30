@@ -50,7 +50,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Bra
         [Given("System contains project with branch")]
         private async Task GivenSystemContainsProjectWithBranch(string projectId, string branchName)
         {
-            var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
+            var httpClient = new RestClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
 
             var result = await httpClient.GetAsync();
             Assert.True(result.Content.Any(x => x.Name == branchName));
@@ -59,7 +59,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Bra
         [When("User wants to see details of branch from project")]
         private async Task WhenUserWantsToSeeDetailsOfBranchFromProject(string branchName, string projectId)
         {
-            var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
+            var httpClient = new RestClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
             _response = await httpClient.GetByIdAsync(branchName);
         }
 
@@ -84,7 +84,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Bra
         [Given("System not contains branch in project")]
         private async Task GivenSystemNotContainsBranchInProject(string branchName, string projectId)
         {
-            var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
+            var httpClient = new RestClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
 
             var result = await httpClient.GetAsync();
             Assert.False(result.Content.Any(x => x.Name == branchName));
@@ -99,7 +99,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Bra
         [Given("System not contains project")]
         private async Task GivenSystemNotContainsProject(string projectId)
         {
-            var httpClient = new HttpClient<ProjectDto>($"http://localhost/api/projects");
+            var httpClient = new RestClient<ProjectDto>($"http://localhost/api/projects");
 
             var result = await httpClient.GetAsync();
             Assert.False(result.Content.Any(x => x.Id == projectId));

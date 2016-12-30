@@ -82,7 +82,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
 
         public async Task<byte[]> ReadBinaryAsync(string projectId, string branchName, string fileUri)
         {
-            string path = GetPathToFile(projectId, fileUri);
+            string path = GetPathToFile(projectId, branchName, fileUri);
             if (!File.Exists(path))
             {
                 throw new FileNotFoundException();

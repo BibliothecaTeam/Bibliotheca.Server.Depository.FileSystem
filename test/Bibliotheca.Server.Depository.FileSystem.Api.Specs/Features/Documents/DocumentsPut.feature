@@ -24,14 +24,14 @@ When user updates document "docs/index-not-exists.md" in branch "Latest" in proj
 Then system returns status code NotFound
 
 Scenario: System have to return proper status code when project id not specified
-Given system contains document "docs/index.md" in branch "Latest" in project "project-a"
-When user updates document "docs/index.md" in branch "Latest" in project ""
-Then system returns status code BadRequest
+Given system contains document "updated-index.md" in branch "Latest" in project "project-a"
+When user updates document "updated-index.md" in branch "Latest" in project ""
+Then system returns status code NotFound
 
 Scenario: System have to return proper status code when branch name not specified
-Given system contains document "docs/index.md" in branch "Latest" in project "project-a"
-When user updates document "docs/index.md" in branch "" in project "project-a"
-Then system returns status code BadRequest
+Given system contains document "updated-index.md" in branch "Latest" in project "project-a"
+When user updates document "updated-index.md" in branch "" in project "project-a"
+Then system returns status code NotFound
 
 Scenario: System have to return proper status code when document uri not specified
 Given system contains document "docs/index.md" in branch "Latest" in project "project-a"

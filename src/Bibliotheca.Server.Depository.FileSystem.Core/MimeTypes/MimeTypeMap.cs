@@ -627,6 +627,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.MimeTypes
                 {".xwd", "image/x-xwindowdump"},
                 {".z", "application/x-compress"},
                 {".zip", "application/zip"},
+                {".md", "text/markdown"},
 
                 {"application/fsharp-script", ".fsx"},
                 {"application/msaccess", ".adp"},
