@@ -47,7 +47,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
                 Name = "Project to delete"
             };
 
-            var projectsClient = new ProjectsClient();
+            var projectsClient = new HttpClient<ProjectDto>("http://localhost/api/projects");
             await projectsClient.PostAsync(projectDto);
 
             var result = await projectsClient.GetAsync();
@@ -57,7 +57,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
         [When("User deletes project")]
         private async Task WhenUserDeletesProject(string projectId)
         {
-            var projectsClient = new ProjectsClient();
+            var projectsClient = new HttpClient<ProjectDto>("http://localhost/api/projects");
             _response = await projectsClient.DeleteAsync(projectId);
         }
 
@@ -70,7 +70,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
         [Then("Project not exists")]
         private async Task ThenProjectNotExists(string projectId)
         {
-            var projectsClient = new ProjectsClient();
+            var projectsClient = new HttpClient<ProjectDto>("http://localhost/api/projects");
             var result = await projectsClient.GetAsync();
 
             Assert.False(result.Content.Any(x => x.Id == projectId));

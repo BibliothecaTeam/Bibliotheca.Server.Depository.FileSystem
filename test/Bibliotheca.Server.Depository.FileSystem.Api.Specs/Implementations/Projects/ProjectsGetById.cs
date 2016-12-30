@@ -11,6 +11,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
     public class ProjectsGetById
     {
         private HttpResponse<ProjectDto> _response;
+        private const string _baseAddress = "http://localhost/api/projects";
 
         [Scenario("Project details must be available")]
         public async Task ProjectDetailsMustBeAvailable()
@@ -42,7 +43,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
         [When("User wants to see details of project")]
         private async Task WhenUserWantsToSeeDetailsOfProject(string projectId)
         {
-            var projectsClient = new ProjectsClient();
+            var projectsClient = new HttpClient<ProjectDto>(_baseAddress);
             _response = await projectsClient.GetByIdAsync(projectId);
         }
 

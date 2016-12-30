@@ -1,105 +1,151 @@
 using FluentBehave;
-using System;
+using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
+using Bibliotheca.Server.Depository.FileSystem.Api.Specs.ApiClients;
+using System.Threading.Tasks;
+using System.Linq;
+using Xunit;
+using System.Net;
 
 namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Branches
 {
     [Feature("BranchesDelete", "Deleting branch")]
     public class BranchesDelete
     {
+        private HttpResponse<BranchDto> _response;
+
         [Scenario("Branch should be successfully deleted")]
-        public void BranchShouldBeSuccessfullyDeleted()
+        public async Task BranchShouldBeSuccessfullyDeleted()
         {
-            GivenSystemContainsProjectWithBranch("project-a", "branch-to-delete");
-            WhenUserDeletesBranchFromProject("branch-to-delete", "project-a");
-            ThenSystemReturnsStatusCodeOk();
-            ThenBrachInProjectNotExists("branch-to-delete", "project-a");
+            try
+            {
+                await GivenSystemContainsProjectWithBranch("project-a", "branch-to-delete");
+                await WhenUserDeletesBranchFromProject("branch-to-delete", "project-a");
+                ThenSystemReturnsStatusCodeOk();
+                await ThenBrachInProjectNotExists("branch-to-delete", "project-a");
+            }
+            finally
+            {
+                var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/project-a/branches");
+                await httpClient.DeleteAsync("branch-to-delete");
+            }
         }
 
         [Scenario("System have to return proper status code when branch not exists")]
-        public void SystemHaveToReturnProperStatusCodeWhenBranchNotExists()
+        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNotExists()
         {
-            GivenSystemNotContainsBranchInProject("branch-not-exists", "project-a");
-            WhenUserDeletesBranchFromProject("branch-not-exists", "project-a");
+            await GivenSystemNotContainsBranchInProject("branch-not-exists", "project-a");
+            await WhenUserDeletesBranchFromProject("branch-not-exists", "project-a");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
         [Scenario("System have to return proper status code when project not exists")]
-        public void SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
+        public async Task SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
         {
-            GivenSystemNotContainsProject("project-not-exists");
-            WhenUserDeletesBranchFromProject("branch-not-exists", "project-not-exists");
+            await GivenSystemNotContainsProject("project-not-exists");
+            await WhenUserDeletesBranchFromProject("branch-not-exists", "project-not-exists");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
         [Scenario("System have to return proper status code when branch name not specified")]
-        public void SystemHaveToReturnProperStatusCodeWhenBranchNameNotSpecified()
+        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNameNotSpecified()
         {
-            GivenSystemContainsProject("project-a");
-            WhenUserDeletesBranchFromProject("", "project-a");
+            await GivenSystemContainsProject("project-a");
+            await WhenUserDeletesBranchFromProject("", "project-a");
             ThenSystemReturnsStatusCodeBadRequest();
         }
 
         [Scenario("System have to return proper status code when project id not specified")]
-        public void SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
+        public async Task SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
         {
-            GivenSystemContainsProjectWithBranch("project-a", "branch-to-delete");
-            WhenUserDeletesBranchFromProject("branch-to-delete", "");
-            ThenSystemReturnsStatusCodeBadRequest();
+            try
+            {
+                await GivenSystemContainsProjectWithBranch("project-a", "branch-to-delete");
+                await WhenUserDeletesBranchFromProject("branch-to-delete", "");
+                ThenSystemReturnsStatusCodeNotFound();
+            }
+            finally
+            {
+                var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/project-a/branches");
+                await httpClient.DeleteAsync("branch-to-delete");
+            }
         }
 
         [Given("System contains project with branch")]
-        private void GivenSystemContainsProjectWithBranch(string p0, string p1)
+        private async Task GivenSystemContainsProjectWithBranch(string projectId, string branchName)
         {
-            throw new NotImplementedException("Implement me!");
+            var branchDto = new BranchDto
+            {
+                Name = branchName,
+                MkDocsYaml = "site_name: ProejctA\ndocs_dir: 'docs'\n"
+            };
+
+            var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
+            var postResult = await httpClient.PostAsync(branchDto);
+            Assert.Equal(HttpStatusCode.Created, postResult.StatusCode);
+
+            var listResult = await httpClient.GetAsync();
+            Assert.True(listResult.Content.Any(x => x.Name == branchName));
         }
 
         [When("User deletes branch from project")]
-        private void WhenUserDeletesBranchFromProject(string p0, string p1)
+        private async Task WhenUserDeletesBranchFromProject(string branchName, string projectId)
         {
-            throw new NotImplementedException("Implement me!");
+            var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
+            _response = await httpClient.DeleteAsync(branchName);
         }
 
         [Then("System returns status code Ok")]
         private void ThenSystemReturnsStatusCodeOk()
         {
-            throw new NotImplementedException("Implement me!");
+            Assert.Equal(HttpStatusCode.OK, _response.StatusCode);
         }
 
         [Then("Brach in project not exists")]
-        private void ThenBrachInProjectNotExists(string p0, string p1)
+        private async Task ThenBrachInProjectNotExists(string branchName, string projectId)
         {
-            throw new NotImplementedException("Implement me!");
+            var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
+
+            var result = await httpClient.GetAsync();
+            Assert.False(result.Content.Any(x => x.Name == branchName));
         }
 
         [Given("System not contains branch in project")]
-        private void GivenSystemNotContainsBranchInProject(string p0, string p1)
+        private async Task GivenSystemNotContainsBranchInProject(string branchName, string projectId)
         {
-            throw new NotImplementedException("Implement me!");
+            var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
+
+            var result = await httpClient.GetAsync();
+            Assert.False(result.Content.Any(x => x.Name == branchName));
         }
 
         [Then("System returns status code NotFound")]
         private void ThenSystemReturnsStatusCodeNotFound()
         {
-            throw new NotImplementedException("Implement me!");
+            Assert.Equal(HttpStatusCode.NotFound, _response.StatusCode);
         }
 
         [Given("System not contains project")]
-        private void GivenSystemNotContainsProject(string p0)
+        private async Task GivenSystemNotContainsProject(string projectId)
         {
-            throw new NotImplementedException("Implement me!");
+            var httpClient = new HttpClient<ProjectDto>($"http://localhost/api/projects");
+
+            var result = await httpClient.GetAsync();
+            Assert.False(result.Content.Any(x => x.Id == projectId));
         }
 
         [Given("System contains project")]
-        private void GivenSystemContainsProject(string p0)
+        private async Task GivenSystemContainsProject(string projectId)
         {
-            throw new NotImplementedException("Implement me!");
+            var httpClient = new HttpClient<ProjectDto>($"http://localhost/api/projects");
+
+            var result = await httpClient.GetAsync();
+            Assert.True(result.Content.Any(x => x.Id == projectId));
         }
 
         [Then("System returns status code BadRequest")]
         private void ThenSystemReturnsStatusCodeBadRequest()
         {
-            throw new NotImplementedException("Implement me!");
+            Assert.Equal(HttpStatusCode.BadRequest, _response.StatusCode);
         }
-
     }
 }

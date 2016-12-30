@@ -3,17 +3,42 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 using Newtonsoft.Json;
 
 namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.ApiClients
 {
-    public class ProjectsClient
+    public class HttpClient<T>
     {
-        public async Task<HttpResponse<IList<ProjectDto>>> GetAsync()
+        private readonly string _address;
+        
+        public HttpClient(string address)
         {
-            var httpResponse = new HttpResponse<IList<ProjectDto>>();
-            var url = $"http://localhost/api/projects";
+            _address = address;
+        }
+
+        public async Task<HttpResponse<IList<T>>> GetAsync()
+        {
+            var httpResponse = new HttpResponse<IList<T>>();
+            var client = ApiTestServer.Instance.CreateClient();
+            client.AddSecurityToken();
+
+            var response = await client.GetAsync(_address);
+            httpResponse.StatusCode = response.StatusCode;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var deserializedObject = JsonConvert.DeserializeObject<IList<T>>(content);
+                httpResponse.Content = deserializedObject;
+            }
+
+            return httpResponse;
+        }
+
+        public async Task<HttpResponse<T>> GetByIdAsync(string id)
+        {
+            var httpResponse = new HttpResponse<T>();
+            var url = $"{_address}/{id}";
             var client = ApiTestServer.Instance.CreateClient();
             client.AddSecurityToken();
 
@@ -23,65 +48,44 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.ApiClients
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var deserializedObject = JsonConvert.DeserializeObject<IList<ProjectDto>>(content);
+                var deserializedObject = JsonConvert.DeserializeObject<T>(content);
                 httpResponse.Content = deserializedObject;
             }
 
             return httpResponse;
         }
 
-        public async Task<HttpResponse<ProjectDto>> GetByIdAsync(string projectId)
+        public async Task<HttpResponse<T>> PostAsync(T newObject)
         {
-            var httpResponse = new HttpResponse<ProjectDto>();
-            var url = $"http://localhost/api/projects/{projectId}";
+            var httpResponse = new HttpResponse<T>();
             var client = ApiTestServer.Instance.CreateClient();
             client.AddSecurityToken();
 
-            var response = await client.GetAsync(url);
-            httpResponse.StatusCode = response.StatusCode;
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var deserializedObject = JsonConvert.DeserializeObject<ProjectDto>(content);
-                httpResponse.Content = deserializedObject;
-            }
-
-            return httpResponse;
-        }
-
-        public async Task<HttpResponse<ProjectDto>> PostAsync(ProjectDto project)
-        {
-            var httpResponse = new HttpResponse<ProjectDto>();
-            var url = $"http://localhost/api/projects";
-            var client = ApiTestServer.Instance.CreateClient();
-            client.AddSecurityToken();
-
-            var projectContent = JsonConvert.SerializeObject(project);
+            var projectContent = JsonConvert.SerializeObject(newObject);
             var stringContent = new StringContent(projectContent);
             stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            var response = await client.PostAsync(url, stringContent);
+            var response = await client.PostAsync(_address, stringContent);
             httpResponse.StatusCode = response.StatusCode;
 
             if (response.StatusCode == HttpStatusCode.Created)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var deserializedObject = JsonConvert.DeserializeObject<ProjectDto>(content);
+                var deserializedObject = JsonConvert.DeserializeObject<T>(content);
                 httpResponse.Content = deserializedObject;
             }
 
             return httpResponse;
         }
 
-        public async Task<HttpResponse<ProjectDto>> PutAsync(string projectId, ProjectDto project)
+        public async Task<HttpResponse<T>> PutAsync(string id, T updatedObject)
         {
-            var httpResponse = new HttpResponse<ProjectDto>();
-            var url = $"http://localhost/api/projects/{projectId}";
+            var httpResponse = new HttpResponse<T>();
+            var url = $"{_address}/{id}";
             var client = ApiTestServer.Instance.CreateClient();
             client.AddSecurityToken();
 
-            var projectContent = JsonConvert.SerializeObject(project);
+            var projectContent = JsonConvert.SerializeObject(updatedObject);
             var stringContent = new StringContent(projectContent);
             stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
@@ -90,10 +94,10 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.ApiClients
             return httpResponse;
         }
 
-        public async Task<HttpResponse> DeleteAsync(string projectId)
+        public async Task<HttpResponse<T>> DeleteAsync(string id)
         {
-            var httpResponse = new HttpResponse<ProjectDto>();
-            var url = $"http://localhost/api/projects/{projectId}";
+            var httpResponse = new HttpResponse<T>();
+            var url = $"{_address}/{id}";
             var client = ApiTestServer.Instance.CreateClient();
             client.AddSecurityToken();
 

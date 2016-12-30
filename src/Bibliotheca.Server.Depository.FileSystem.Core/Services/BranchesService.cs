@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 using Bibliotheca.Server.Depository.FileSystem.Core.Exceptions;
@@ -43,12 +45,13 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
 
                     branches.Add(branch);
                 }
-                catch (MkDocsFileNotFoundException)
+                catch (FileNotFoundException)
                 {
                     _logger.LogWarning($"Branch '{branchName}' in project '{projectId}' doesn't have mkdocs file.");
                 }
             }
 
+            branches = branches.OrderBy(x => x.Name).ToList();
             return branches;
         }
 
@@ -121,13 +124,14 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
 
             try
             {
-                var deserializer = new Deserializer();
+                var deserializer = new DeserializerBuilder().Build();
                 var branchConfiguration = deserializer.Deserialize<Dictionary<object, object>>(mkdocsFile);
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                _logger.LogError(exception.Message);
                 return false;
             }
         }

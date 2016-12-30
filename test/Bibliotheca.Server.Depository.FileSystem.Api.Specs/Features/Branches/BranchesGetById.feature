@@ -20,11 +20,6 @@ Given system not contains project "project-not-exists"
 When user wants to see details of branch "branch-not-exists" from project "project-not-exists"
 Then system returns status code NotFound
 
-Scenario: System have to return proper status code when branch name not specified
-Given system contains project "project-a"
-When user wants to see details of branch "" from project "project-a"
-Then system returns status code BadRequest
-
 Scenario: System have to return proper status code when project id not specified
 Given system contains project "project-a" with branch "Latest"
 When user wants to see details of branch "Latest" from project ""

@@ -6,7 +6,7 @@ namespace test
     [Feature("DocumentsPost", "Creating a new documents")]
     public class DocumentsPost
     {
-        [Scenario("Documents should be successfully added")]
+        //[Scenario("Documents should be successfully added")]
         public void DocumentsShouldBeSuccessfullyAdded()
         {
             GivenSystemNotContainsDocumentInBranchInProject("docs/new-document.md", "Latest", "project-a");
@@ -15,7 +15,7 @@ namespace test
             ThenNewDocumentExistsInBranchInProject("", "Latest", "project-a");
         }
 
-        [Scenario("System have to return proper status code when project not exists")]
+        //[Scenario("System have to return proper status code when project not exists")]
         public void SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
         {
             GivenSystemNotContainsProject("project-not-exists");
@@ -23,7 +23,7 @@ namespace test
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when branch not exists")]
+        //[Scenario("System have to return proper status code when branch not exists")]
         public void SystemHaveToReturnProperStatusCodeWhenBranchNotExists()
         {
             GivenSystemNotContainsBranchInProject("branch-not-exists", "project-a");
@@ -31,7 +31,7 @@ namespace test
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when project id not specified")]
+        //[Scenario("System have to return proper status code when project id not specified")]
         public void SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
         {
             GivenSystemNotContainsDocumentInBranchInProject("docs/new-document.md", "Latest", "project-a");
@@ -39,7 +39,7 @@ namespace test
             ThenSystemReturnsStatusCodeBadRequest();
         }
 
-        [Scenario("System have to return proper status code when branch name not specified")]
+        //[Scenario("System have to return proper status code when branch name not specified")]
         public void SystemHaveToReturnProperStatusCodeWhenBranchNameNotSpecified()
         {
             GivenSystemNotContainsDocumentInBranchInProject("docs/new-document.md", "Latest", "project-a");
@@ -47,7 +47,7 @@ namespace test
             ThenSystemReturnsStatusCodeBadRequest();
         }
 
-        [Scenario("System have to return proper status code when document uri not specified")]
+        //[Scenario("System have to return proper status code when document uri not specified")]
         public void SystemHaveToReturnProperStatusCodeWhenDocumentUriNotSpecified()
         {
             GivenSystemNotContainsDocumentInBranchInProject("docs/new-document.md", "Latest", "project-a");

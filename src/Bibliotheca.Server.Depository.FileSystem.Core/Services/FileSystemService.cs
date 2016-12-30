@@ -70,7 +70,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
 
         public async Task<string> ReadTextAsync(string projectId, string branchName, string fileUri)
         {
-            string path = GetPathToFile(projectId, fileUri);
+            string path = GetPathToFile(projectId, branchName, fileUri);
             if (!File.Exists(path))
             {
                 throw new FileNotFoundException();
@@ -122,7 +122,18 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
         public async Task CreateFolderAsync(string projectId, string branchName, string path)
         {
             string[] paths = path.Split('/');
-            var directoryPath = Path.Combine(_applicationParameters.ProjectsUrl, projectId, branchName);
+
+            var directoryPath = Path.Combine(_applicationParameters.ProjectsUrl, projectId);
+            if(!Directory.Exists(directoryPath))
+            {
+                await CreateDirectoryAsync(directoryPath);
+            }
+
+            directoryPath = Path.Combine(directoryPath, branchName);
+            if(!Directory.Exists(directoryPath))
+            {
+                await CreateDirectoryAsync(directoryPath);
+            }
 
             foreach (var item in paths)
             {

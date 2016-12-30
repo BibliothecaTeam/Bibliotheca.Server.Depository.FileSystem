@@ -12,6 +12,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
     public class ProjectsPut
     {
         private HttpResponse _response;
+        private const string _baseAddress = "http://localhost/api/projects";
 
         [Scenario("Project should be successfully modified")]
         public async Task ProjectShouldBeSuccessfullyModified()
@@ -25,7 +26,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
             }
             finally
             {
-                var projectsClient = new ProjectsClient();
+                var projectsClient = new HttpClient<ProjectDto>(_baseAddress);
                 await projectsClient.DeleteAsync("updated-project-a");
             }
         }
@@ -49,7 +50,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
         [Given("System contains project with name")]
         private async Task GivenSystemContainsProjectWithName(string projectId, string projectName)
         {
-            var projectsClient = new ProjectsClient();
+            var projectsClient = new HttpClient<ProjectDto>(_baseAddress);
             var projectDto = new ProjectDto
             {
                 Id = projectId,
@@ -66,7 +67,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
         [When("User updates project with new name")]
         private async Task WhenUserUpdatesProjectWithNewName(string projectId, string projectName)
         {
-            var projectsClient = new ProjectsClient();
+            var projectsClient = new HttpClient<ProjectDto>(_baseAddress);
 
             var projectDto = new ProjectDto
             {
@@ -86,7 +87,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
         [Then("Project has name")]
         private async Task ThenProjectHasName(string projectId, string projectName)
         {
-            var projectsClient = new ProjectsClient();
+            var projectsClient = new HttpClient<ProjectDto>(_baseAddress);
             var result = await projectsClient.GetByIdAsync(projectId);
 
             Assert.NotNull(result.Content);
@@ -96,7 +97,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
         [Given("System does not contains project")]
         private async Task GivenSystemDoesNotContainsProject(string projectId)
         {
-            var projectsClient = new ProjectsClient();
+            var projectsClient = new HttpClient<ProjectDto>(_baseAddress);
 
             var result = await projectsClient.GetAsync();
             Assert.False(result.Content.Any(x => x.Id == projectId));

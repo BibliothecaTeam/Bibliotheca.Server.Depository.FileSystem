@@ -1,106 +1,132 @@
 using FluentBehave;
-using System;
+using Bibliotheca.Server.Depository.FileSystem.Api.Specs.ApiClients;
+using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
+using System.Threading.Tasks;
+using Xunit;
+using System.Linq;
+using System.Collections.Generic;
+using System.Net;
 
 namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Branches
 {
     [Feature("BranchesGet", "Branches list")]
     public class BranchesGet
     {
+        private HttpResponse<IList<BranchDto>> _response;
+
         [Scenario("List of branches must be available")]
-        public void ListOfBranchesMustBeAvailable()
+        public async Task ListOfBranchesMustBeAvailable()
         {
-            GivenSystemContainsProjectWithBranches("project-a");
-            WhenUserWantsToSeeAllBranchesFromProject("project-a");
+            await GivenSystemContainsProjectWithBranches("project-a", "Latest", "Release 1.0");
+            await WhenUserWantsToSeeAllBranchesFromProject("project-a");
             ThenSystemReturnsStatusCodeOk();
-            ThenSystemReturnsAllAvailableBranches();
+            await ThenSystemReturnsBranchesFromProject("Latest", "Release 1.0", "project-a");
             ThenBranchesAreSortedAlpabetically();
         }
 
         [Scenario("List must contains only branches with correct configuration")]
-        public void ListMustContainsOnlyBranchesWithCorrectConfiguration()
+        public async Task ListMustContainsOnlyBranchesWithCorrectConfiguration()
         {
-            GivenSystemContainsProjectWithBranches("project-a");
-            GivenBranchDoesNotHaveConfigurationFile("empty-branch");
-            WhenUserWantsToSeeAllBranchesFromProject("project-a");
+            await GivenSystemContainsProjectWithBranches("project-a", "Latest", "Release 1.0");
+            GivenBranchInProjectDoesNotHaveConfigurationFile("empty-branch", "project-a");
+            await WhenUserWantsToSeeAllBranchesFromProject("project-a");
             ThenSystemReturnsStatusCodeOk();
-            ThenSystemReturnsBranchesWithout("empty-branch");
+            await ThenSystemReturnsBranchesFromProjectWithout("empty-branch", "project-a");
         }
 
         [Scenario("System have to return proper status code when project not exists")]
-        public void SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
+        public async Task SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
         {
-            GivenSystemNotContainsProject("project-not-exists");
-            WhenUserWantsToSeeAllBranchesFromProject("project-not-exists");
+            await GivenSystemNotContainsProject("project-not-exists");
+            await WhenUserWantsToSeeAllBranchesFromProject("project-not-exists");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
         [Scenario("System have to return proper status code when project id not specified")]
-        public void SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
+        public async Task SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
         {
-            GivenSystemContainsProjectWithBranches("project-a");
-            WhenUserWantsToSeeAllBranchesFromProject("");
-            ThenSystemReturnsStatusCodeBadRequest();
+            await GivenSystemContainsProjectWithBranches("project-a", "Latest", "Release 1.0");
+            await WhenUserWantsToSeeAllBranchesFromProject("");
+            ThenSystemReturnsStatusCodeNotFound();
         }
 
         [Given("System contains project with branches")]
-        private void GivenSystemContainsProjectWithBranches(string p0)
+        private async Task GivenSystemContainsProjectWithBranches(string projectId, string branch1, string branch2)
         {
-            throw new NotImplementedException("Implement me!");
+            var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
+
+            var result = await httpClient.GetAsync();
+            Assert.True(result.Content.Count == 2);
+            Assert.True(result.Content.Any(x => x.Name == branch1));
+            Assert.True(result.Content.Any(x => x.Name == branch2));
         }
 
         [When("User wants to see all branches from project")]
-        private void WhenUserWantsToSeeAllBranchesFromProject(string p0)
+        private async Task WhenUserWantsToSeeAllBranchesFromProject(string projectId)
         {
-            throw new NotImplementedException("Implement me!");
+            var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
+            _response = await httpClient.GetAsync();
         }
 
         [Then("System returns status code Ok")]
         private void ThenSystemReturnsStatusCodeOk()
         {
-            throw new NotImplementedException("Implement me!");
+            Assert.Equal(HttpStatusCode.OK, _response.StatusCode);
         }
 
-        [Then("System returns all available branches")]
-        private void ThenSystemReturnsAllAvailableBranches()
+        [Then("System returns branches from project")]
+        private async Task ThenSystemReturnsBranchesFromProject(string branch1, string branch2, string projectId)
         {
-            throw new NotImplementedException("Implement me!");
+            var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
+
+            var result = await httpClient.GetAsync();
+            Assert.True(result.Content.Count == 2);
+            Assert.True(result.Content.Any(x => x.Name == branch1));
+            Assert.True(result.Content.Any(x => x.Name == branch2));
         }
 
         [Then("Branches are sorted alpabetically")]
         private void ThenBranchesAreSortedAlpabetically()
         {
-            throw new NotImplementedException("Implement me!");
+            for(int i = 1; i < _response.Content.Count; ++i)
+            {
+                Assert.True(_response.Content[i -1].Name.CompareTo(_response.Content[i].Name) == -1);
+            }
         }
 
-        [Given("Branch does not have configuration file")]
-        private void GivenBranchDoesNotHaveConfigurationFile(string p0)
+        [Given("Branch in project does not have configuration file")]
+        private void GivenBranchInProjectDoesNotHaveConfigurationFile(string branchName, string projectId)
         {
-            throw new NotImplementedException("Implement me!");
         }
 
-        [Then("System returns branches without")]
-        private void ThenSystemReturnsBranchesWithout(string p0)
+        [Then("System returns branches from project without")]
+        private async Task ThenSystemReturnsBranchesFromProjectWithout(string branchName, string projectId)
         {
-            throw new NotImplementedException("Implement me!");
+            var httpClient = new HttpClient<BranchDto>($"http://localhost/api/projects/{projectId}/branches");
+
+            var result = await httpClient.GetAsync();
+            Assert.False(result.Content.Any(x => x.Name == branchName));
         }
 
         [Given("System not contains project")]
-        private void GivenSystemNotContainsProject(string p0)
+        private async Task GivenSystemNotContainsProject(string projectId)
         {
-            throw new NotImplementedException("Implement me!");
+            var httpClient = new HttpClient<ProjectDto>($"http://localhost/api/projects");
+
+            var result = await httpClient.GetAsync();
+            Assert.False(result.Content.Any(x => x.Name == projectId));
         }
 
         [Then("System returns status code NotFound")]
         private void ThenSystemReturnsStatusCodeNotFound()
         {
-            throw new NotImplementedException("Implement me!");
+            Assert.Equal(HttpStatusCode.NotFound, _response.StatusCode);
         }
 
         [Then("System returns status code BadRequest")]
         private void ThenSystemReturnsStatusCodeBadRequest()
         {
-            throw new NotImplementedException("Implement me!");
+            Assert.Equal(HttpStatusCode.BadRequest, _response.StatusCode);
         }
-
     }
 }

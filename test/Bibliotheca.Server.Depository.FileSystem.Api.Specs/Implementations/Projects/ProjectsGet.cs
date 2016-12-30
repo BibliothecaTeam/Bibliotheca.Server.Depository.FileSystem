@@ -13,6 +13,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
     public class ProjectsGet
     {
         private HttpResponse<IList<ProjectDto>> _response;
+        private const string _baseAddress = "http://localhost/api/projects";
 
         [Scenario("List of projects must be available")]
         public async Task ListOfProjectsMustBeAvailable()
@@ -47,7 +48,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
         [When("User wants to see all projects")]
         private async Task WhenUserWantsToSeeAllProjects()
         {
-            var projectsClient = new ProjectsClient();
+            var projectsClient = new HttpClient<ProjectDto>(_baseAddress);
             _response = await projectsClient.GetAsync();
         }
 
