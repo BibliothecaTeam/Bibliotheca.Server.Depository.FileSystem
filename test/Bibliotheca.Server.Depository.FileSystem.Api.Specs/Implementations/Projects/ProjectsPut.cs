@@ -31,16 +31,16 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
             }
         }
 
-        [Scenario("System have to return proper status code when project not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
+        [Scenario("System have to return proper status code during updating project when project not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringUpdatingProjectWhenProjectNotExists()
         {
             await GivenSystemDoesNotContainsProject("updated-project-b");
             await WhenUserUpdatesProjectWithNewName("updated-project-b", "New Project Name");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when project id was not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectIdWasNotSpecified()
+        [Scenario("System have to return proper status code during updating project when project id was not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringUpdatingProjectWhenProjectIdWasNotSpecified()
         {
             await GivenSystemDoesNotContainsProject("updated-project-c");
             await WhenUserUpdatesProjectWithNewName("", "New Project Name");

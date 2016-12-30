@@ -32,40 +32,40 @@ namespace test
             }
         }
 
-        [Scenario("System have to return proper status code when project not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
+        [Scenario("System have to return proper status code during adding document when project not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringAddingDocumentWhenProjectNotExists()
         {
             await GivenSystemNotContainsProject("project-not-exists");
             await WhenUserAddsDocumentToBranchInProject("docs/new-document.md", "Latest", "project-not-exists");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when branch not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNotExists()
+        [Scenario("System have to return proper status code during adding document when branch not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringAddingDocumentWhenBranchNotExists()
         {
             await GivenSystemNotContainsBranchInProject("branch-not-exists", "project-a");
             await WhenUserAddsDocumentToBranchInProject("docs/new-document.md", "branch-not-exists", "project-a");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when project id not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
+        [Scenario("System have to return proper status code during adding document when project id not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringAddingDocumentWhenProjectIdNotSpecified()
         {
             await GivenSystemNotContainsDocumentInBranchInProject("docs/new-document.md", "Latest", "project-a");
             await WhenUserAddsDocumentToBranchInProject("docs/new-document.md", "Latest", "");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when branch name not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNameNotSpecified()
+        [Scenario("System have to return proper status code during adding document when branch name not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringAddingDocumentWhenBranchNameNotSpecified()
         {
             await GivenSystemNotContainsDocumentInBranchInProject("docs/new-document.md", "Latest", "project-a");
             await WhenUserAddsDocumentToBranchInProject("docs/new-document.md", "", "project-a");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when document uri not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenDocumentUriNotSpecified()
+        [Scenario("System have to return proper status code during adding document when document uri not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringAddingDocumentWhenDocumentUriNotSpecified()
         {
             await GivenSystemNotContainsDocumentInBranchInProject("docs/new-document.md", "Latest", "project-a");
             await WhenUserAddsDocumentToBranchInProject("", "Latest", "project-a");

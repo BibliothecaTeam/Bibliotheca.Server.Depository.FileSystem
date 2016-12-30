@@ -34,16 +34,16 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Bra
             await ThenSystemReturnsBranchesFromProjectWithout("empty-branch", "project-a");
         }
 
-        [Scenario("System have to return proper status code when project not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
+        [Scenario("System have to return proper status code during getting list of branches when project not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringGettingListOfBranchesWhenProjectNotExists()
         {
             await GivenSystemNotContainsProject("project-not-exists");
             await WhenUserWantsToSeeAllBranchesFromProject("project-not-exists");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when project id not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
+        [Scenario("System have to return proper status code during getting list of branches when project id not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringGettingListOfBranchesWhenProjectIdNotSpecified()
         {
             await GivenSystemContainsProjectWithBranches("project-a", "Latest", "Release 1.0");
             await WhenUserWantsToSeeAllBranchesFromProject("");

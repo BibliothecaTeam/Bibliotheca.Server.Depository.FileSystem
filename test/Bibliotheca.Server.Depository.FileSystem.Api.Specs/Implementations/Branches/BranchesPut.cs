@@ -29,16 +29,16 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Bra
             }
         }
 
-        [Scenario("System have to return proper status code when project not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
+        [Scenario("System have to return proper status code during updating branch when project not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringUpdatingBranchWhenProjectNotExists()
         {
             await GivenSystemNotContainsProject("project-not-exists");
             await WhenUserUpdatesBranchInProject("updated-branch", "project-not-exists");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when branch name not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNameNotSpecified()
+        [Scenario("System have to return proper status code during updating branch when branch name not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringUpdatingBranchWhenBranchNameNotSpecified()
         {
             try
             {
@@ -53,8 +53,8 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Bra
             }
         }
 
-        [Scenario("System have to return proper status code when project id not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
+        [Scenario("System have to return proper status code during updating branch when project id not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringUpdatingBranchWhenProjectIdNotSpecified()
         {
             await GivenSystemNotContainsBranchInProject("not-exists-branch", "project-a");
             await WhenUserUpdatesBranchInProject("not-exists-branch", "");

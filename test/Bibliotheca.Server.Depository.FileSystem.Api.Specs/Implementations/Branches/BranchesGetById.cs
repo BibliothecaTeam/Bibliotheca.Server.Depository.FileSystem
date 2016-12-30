@@ -23,24 +23,24 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Bra
             ThenConfigurationInformationIsAvailable();
         }
 
-        [Scenario("System have to return proper status code when branch not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNotExists()
+        [Scenario("System have to return proper status code during getting branch details when branch not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringGettingBranchDetailsWhenBranchNotExists()
         {
             await GivenSystemNotContainsBranchInProject("branch-not-exists", "project-a");
             await WhenUserWantsToSeeDetailsOfBranchFromProject("branch-not-exists", "project-a");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when project not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
+        [Scenario("System have to return proper status code during getting branch details when project not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringGettingBranchDetailsWhenProjectNotExists()
         {
             await GivenSystemNotContainsProject("project-not-exists");
             await WhenUserWantsToSeeDetailsOfBranchFromProject("branch-not-exists", "project-not-exists");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when project id not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
+        [Scenario("System have to return proper status code during getting branch details when project id not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringGettingBranchDetailsWhenProjectIdNotSpecified()
         {
             await GivenSystemContainsProjectWithBranch("project-a", "Latest");
             await WhenUserWantsToSeeDetailsOfBranchFromProject("Latest", "");

@@ -30,32 +30,32 @@ namespace test
             }
         }
 
-        [Scenario("System have to return proper status code when project not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
+        [Scenario("System have to return proper status code during updating document when project not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringUpdatingDocumentWhenProjectNotExists()
         {
             await GivenSystemNotContainsProject("project-not-exists");
             await WhenUserUpdatesDocumentInBranchInProject("docs/index.md", "Latest", "project-not-exists");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when branch not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNotExists()
+        [Scenario("System have to return proper status code during updating document when branch not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringUpdatingDocumentWhenBranchNotExists()
         {
             await GivenSystemNotContainsBranchInProject("branch-not-exists", "project-a");
             await WhenUserUpdatesDocumentInBranchInProject("docs/index.md", "branch-not-exists", "project-a");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when document not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenDocumentNotExists()
+        [Scenario("System have to return proper status code during updating document when document not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringUpdatingDocumentWhenDocumentNotExists()
         {
             await GivenSystemNotContainsDocumentInBranchInProject("docs/index-not-exists.md", "Latest", "project-a");
             await WhenUserUpdatesDocumentInBranchInProject("docs/index-not-exists.md", "Latest", "project-a");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when project id not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
+        [Scenario("System have to return proper status code during updating document when project id not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringUpdatingDocumentWhenProjectIdNotSpecified()
         {
             try
             {
@@ -70,8 +70,8 @@ namespace test
             }
         }
 
-        [Scenario("System have to return proper status code when branch name not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNameNotSpecified()
+        [Scenario("System have to return proper status code during updating document when branch name not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringUpdatingDocumentWhenBranchNameNotSpecified()
         {
             try
             {
@@ -86,8 +86,8 @@ namespace test
             }
         }
 
-        [Scenario("System have to return proper status code when document uri not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenDocumentUriNotSpecified()
+        [Scenario("System have to return proper status code during updating document when document uri not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringUpdatingDocumentWhenDocumentUriNotSpecified()
         {
             try
             {

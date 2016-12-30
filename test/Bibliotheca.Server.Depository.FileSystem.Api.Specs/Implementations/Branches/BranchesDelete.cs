@@ -30,32 +30,32 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Bra
             }
         }
 
-        [Scenario("System have to return proper status code when branch not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNotExists()
+        [Scenario("System have to return proper status code during deleting branch when branch not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringDeletingBranchWhenBranchNotExists()
         {
             await GivenSystemNotContainsBranchInProject("branch-not-exists", "project-a");
             await WhenUserDeletesBranchFromProject("branch-not-exists", "project-a");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when project not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
+        [Scenario("System have to return proper status code during deleting branch when project not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringDeletingBranchWhenProjectNotExists()
         {
             await GivenSystemNotContainsProject("project-not-exists");
             await WhenUserDeletesBranchFromProject("branch-not-exists", "project-not-exists");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when branch name not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNameNotSpecified()
+        [Scenario("System have to return proper status code during deleting branch when branch name not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringDeletingBranchWhenBranchNameNotSpecified()
         {
             await GivenSystemContainsProject("project-a");
             await WhenUserDeletesBranchFromProject("", "project-a");
             ThenSystemReturnsStatusCodeBadRequest();
         }
 
-        [Scenario("System have to return proper status code when project id not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
+        [Scenario("System have to return proper status code during deleting branch when project id not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringDeletingBranchWhenProjectIdNotSpecified()
         {
             try
             {

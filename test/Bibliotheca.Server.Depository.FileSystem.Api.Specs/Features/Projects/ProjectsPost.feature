@@ -9,7 +9,7 @@ When user adds project "new-project-a"
 Then system returns status code Created
     And project "new-project-a" exists
 
-Scenario: System have to return proper status code when project exists
+Scenario: System have to return proper status code during creating new project when project exists
 Given system contains projects "project-a"
 When user adds project "project-a"
 Then system returns status code BadRequest

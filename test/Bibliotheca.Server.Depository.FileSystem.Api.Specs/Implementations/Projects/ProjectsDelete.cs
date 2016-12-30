@@ -22,16 +22,16 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
             await ThenProjectNotExists("project-to-delete");
         }
 
-        [Scenario("System have to return proper status code when project not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
+        [Scenario("System have to return proper status code during deleting project when project not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringDeletingProjectWhenProjectNotExists()
         {
             GivenSystemNotContainsProjects("project-x");
             await WhenUserDeletesProject("project-x");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when project id not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
+        [Scenario("System have to return proper status code during deleting project when project id not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringDeletingProjectWhenProjectIdNotSpecified()
         {
             GivenSystemNotContainsProjects("");
             await WhenUserDeletesProject("");

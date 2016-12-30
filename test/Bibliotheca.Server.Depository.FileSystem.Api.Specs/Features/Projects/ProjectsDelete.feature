@@ -9,12 +9,12 @@ When user deletes project "project-to-delete"
 Then system returns status code Ok
     And project "project-to-delete" not exists
 
-Scenario: System have to return proper status code when project not exists
+Scenario: System have to return proper status code during deleting project when project not exists
 Given system not contains projects "project-x"
 When user deletes project "project-x"
 Then system returns status code NotFound
 
-Scenario: System have to return proper status code when project id not specified
+Scenario: System have to return proper status code during deleting project when project id not specified
 Given system not contains projects ""
 When user deletes project ""
 Then system returns status code BadRequest

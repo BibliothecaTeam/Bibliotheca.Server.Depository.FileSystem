@@ -24,48 +24,48 @@ namespace test
             ThenFileTypeIsEqual("text/markdown");
         }
 
-        [Scenario("System have to return proper status code when project not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
+        [Scenario("System have to return proper status code during getting document when project not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringGettingDocumentWhenProjectNotExists()
         {
             await GivenSystemNotContainsProject("project-not-exists");
             await WhenUserWantsToSeeDetailsOfDocumentInBranchInProject("docs/index.md", "Latest", "project-not-exists");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when branch not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNotExists()
+        [Scenario("System have to return proper status code during getting document when branch not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringGettingDocumentWhenBranchNotExists()
         {
             await GivenSystemNotContainsBranchInProject("branch-not-exists", "project-a");
             await WhenUserWantsToSeeDetailsOfDocumentInBranchInProject("docs/index.md", "branch-not-exists", "project-a");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when document not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenDocumentNotExists()
+        [Scenario("System have to return proper status code during getting document when document not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringGettingDocumentWhenDocumentNotExists()
         {
             await GivenSystemNotContainsDocumentInBranchInProject("docs/index-not-exists.md", "Latest", "project-a");
             await WhenUserWantsToSeeDetailsOfDocumentInBranchInProject("docs/index-not-exists.md", "Latest", "project-a");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when project id not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
+        [Scenario("System have to return proper status code during getting document when project id not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringGettingDocumentWhenProjectIdNotSpecified()
         {
             await GivenSystemContainsDocumentInBranchInProject("docs/index.md", "Latest", "project-a");
             await WhenUserWantsToSeeDetailsOfDocumentInBranchInProject("docs/index.md", "Latest", "");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when branch name not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNameNotSpecified()
+        [Scenario("System have to return proper status code during getting document when branch name not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringGettingDocumentWhenBranchNameNotSpecified()
         {
             await GivenSystemContainsDocumentInBranchInProject("docs/index.md", "Latest", "project-a");
             await WhenUserWantsToSeeDetailsOfDocumentInBranchInProject("docs/index.md", "", "project-a");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when document uri not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenDocumentUriNotSpecified()
+        [Scenario("System have to return proper status code during getting document when document uri not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringGettingDocumentWhenDocumentUriNotSpecified()
         {
             await GivenSystemContainsDocumentInBranchInProject("docs/index.md", "Latest", "project-a");
             await WhenUserWantsToSeeDetailsOfDocumentInBranchInProject("", "Latest", "project-a");

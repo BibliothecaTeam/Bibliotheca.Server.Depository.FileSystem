@@ -31,32 +31,32 @@ namespace test
             }
         }
 
-        [Scenario("System have to return proper status code when project not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
+        [Scenario("System have to return proper status code during deleting document when project not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringDeletingDocumentWhenProjectNotExists()
         {
             await GivenSystemNotContainsProject("project-not-exists");
             await WhenUserDeletesDocumentFromBranchInProject("docs/index.md", "Latest", "project-not-exists");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when branch not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNotExists()
+        [Scenario("System have to return proper status code during deleting document when branch not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringDeletingDocumentWhenBranchNotExists()
         {
             await GivenSystemNotContainsBranchInProject("branch-not-exists", "project-a");
             await WhenUserDeletesDocumentFromBranchInProject("docs/index.md", "branch-not-exists", "project-a");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when document not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenDocumentNotExists()
+        [Scenario("System have to return proper status code during deleting document when document not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringDeletingDocumentWhenDocumentNotExists()
         {
             await GivenSystemNotContainsDocumentInBranchInProject("docs/index-not-exists.md", "Latest", "project-a");
             await WhenUserDeletesDocumentFromBranchInProject("docs/index-not-exists.md", "Latest", "project-a");
             ThenSystemReturnsStatusCodeNotFound();
         }
 
-        [Scenario("System have to return proper status code when project id not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectIdNotSpecified()
+        [Scenario("System have to return proper status code during deleting document when project id not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringDeletingDocumentWhenProjectIdNotSpecified()
         {
             try
             {
@@ -71,8 +71,8 @@ namespace test
             }
         }
 
-        [Scenario("System have to return proper status code when branch name not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenBranchNameNotSpecified()
+        [Scenario("System have to return proper status code during deleting document when branch name not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringDeletingDocumentWhenBranchNameNotSpecified()
         {
             try
             {
@@ -87,8 +87,8 @@ namespace test
             }
         }
 
-        [Scenario("System have to return proper status code when document uri not specified")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenDocumentUriNotSpecified()
+        [Scenario("System have to return proper status code during deleting document when document uri not specified")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringDeletingDocumentWhenDocumentUriNotSpecified()
         {
             try
             {

@@ -27,8 +27,8 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
             ThenTagsContainsOnly("TagC", "TagB", "TagA");
         }
 
-        [Scenario("System have to return proper status code when project not exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectNotExists()
+        [Scenario("System have to return proper status code during getting project details when project not exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringGettingProjectDetailsWhenProjectNotExists()
         {
             GivenSystemNotContainsProjects("project-x");
             await WhenUserWantsToSeeDetailsOfProject("project-x");

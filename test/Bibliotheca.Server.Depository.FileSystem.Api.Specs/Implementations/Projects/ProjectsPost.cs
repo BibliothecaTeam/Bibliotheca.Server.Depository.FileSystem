@@ -31,8 +31,8 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Pro
             }
         }
 
-        [Scenario("System have to return proper status code when project exists")]
-        public async Task SystemHaveToReturnProperStatusCodeWhenProjectExists()
+        [Scenario("System have to return proper status code during creating new project when project exists")]
+        public async Task SystemHaveToReturnProperStatusCodeDuringCreatingNewProjectWhenProjectExists()
         {
             await GivenSystemContainsProjects("project-a");
             await WhenUserAddsProject("project-a");
