@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
-using Bibliotheca.Server.Depository.FileSystem.Core.Exceptions;
+using Bibliotheca.Server.Depository.Abstractions.Exceptions;
 using Bibliotheca.Server.Depository.FileSystem.Core.Validators;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
