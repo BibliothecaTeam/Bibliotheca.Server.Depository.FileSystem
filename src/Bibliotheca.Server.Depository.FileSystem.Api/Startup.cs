@@ -1,6 +1,7 @@
 using Bibliotheca.Server.Depository.FileSystem.Core.Parameters;
 using Bibliotheca.Server.Depository.FileSystem.Core.Services;
 using Bibliotheca.Server.Depository.FileSystem.Core.Validators;
+using Bibliotheca.Server.ServiceDiscovery.ServiceClient;
 using Bibliotheca.Server.Mvc.Middleware.Authorization;
 using Bibliotheca.Server.Mvc.Middleware.Diagnostics.Exceptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.Swagger.Model;
+using System;
 
 namespace Bibliotheca.Server.Depository.FileSystem.Api
 {
@@ -75,7 +77,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
             });
 
             services.AddScoped<IFileSystemService, FileSystemService>();
-            services.AddScoped<ICommonValidator, CommonValidator>();;
+            services.AddScoped<ICommonValidator, CommonValidator>();
             services.AddScoped<IProjectsService, ProjectsService>();
             services.AddScoped<IBranchesService, BranchesService>();
             services.AddScoped<IDocumentsService, DocumentsService>();
@@ -83,6 +85,18 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            var serviceDiscoveryConfiguration = Configuration.GetSection("ServiceDiscovery");
+            var clientOptions = new ClientOptions
+            {
+                ServiceId = serviceDiscoveryConfiguration["ServiceId"],
+                ServiceName = serviceDiscoveryConfiguration["ServiceName"],
+                AgentAddress = serviceDiscoveryConfiguration["AgentAddress"],
+                Datacenter = serviceDiscoveryConfiguration["Datacenter"],
+                ClientPort = GetPort()
+            };
+            var serviceDiscovery = new ServiceDiscoveryClient();
+            serviceDiscovery.Register(clientOptions);
+
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
@@ -111,6 +125,18 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
 
             app.UseSwagger();
             app.UseSwaggerUi();
+        }
+
+        private int GetPort()
+        {
+            var address = Configuration["server.urls"];
+            if (!string.IsNullOrWhiteSpace(address))
+            {
+                var url = new Uri(address);
+                return url.Port;
+            }
+
+            return 5000;
         }
     }
 }
