@@ -2,7 +2,7 @@ using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 
-namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs
+namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Infrastructure
 {
     public sealed class ApiTestServer : IDisposable
     {
@@ -37,7 +37,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs
 
             var webHostBuilder = new WebHostBuilder()
                 .UseContentRoot(contentDirectory)
-                .UseStartup<Startup>();
+                .UseStartup<TestStartup>();
 
             return new TestServer(webHostBuilder);
         }

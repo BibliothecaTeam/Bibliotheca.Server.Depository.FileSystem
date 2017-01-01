@@ -22,6 +22,8 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
     {
         public IConfigurationRoot Configuration { get; }
 
+        protected bool UseServiceDiscovery { get; set; } = true;
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -85,17 +87,10 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            var serviceDiscoveryConfiguration = Configuration.GetSection("ServiceDiscovery");
-            var clientOptions = new ClientOptions
+            if (UseServiceDiscovery)
             {
-                ServiceId = serviceDiscoveryConfiguration["ServiceId"],
-                ServiceName = serviceDiscoveryConfiguration["ServiceName"],
-                AgentAddress = serviceDiscoveryConfiguration["AgentAddress"],
-                Datacenter = serviceDiscoveryConfiguration["Datacenter"],
-                ClientPort = GetPort()
-            };
-            var serviceDiscovery = new ServiceDiscoveryClient();
-            serviceDiscovery.Register(clientOptions);
+                RegisterClient();
+            }
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -125,6 +120,21 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
 
             app.UseSwagger();
             app.UseSwaggerUi();
+        }
+
+        private void RegisterClient()
+        {
+            var serviceDiscoveryConfiguration = Configuration.GetSection("ServiceDiscovery");
+            var clientOptions = new ClientOptions
+            {
+                ServiceId = serviceDiscoveryConfiguration["ServiceId"],
+                ServiceName = serviceDiscoveryConfiguration["ServiceName"],
+                AgentAddress = serviceDiscoveryConfiguration["AgentAddress"],
+                Datacenter = serviceDiscoveryConfiguration["Datacenter"],
+                ClientPort = GetPort()
+            };
+            var serviceDiscovery = new ServiceDiscoveryClient();
+            serviceDiscovery.Register(clientOptions);
         }
 
         private int GetPort()

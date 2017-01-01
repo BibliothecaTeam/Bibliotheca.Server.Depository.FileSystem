@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Bibliotheca.Server.Depository.FileSystem.Api.Specs.Infrastructure;
 using Newtonsoft.Json;
 
 namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.ApiClients
