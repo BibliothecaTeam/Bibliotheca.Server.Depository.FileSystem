@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Swashbuckle.Swagger.Model;
 using System;
 using System.Collections.Generic;
+using Bibliotheca.Server.ServiceDiscovery.ServiceClient.Extensions;
 
 namespace Bibliotheca.Server.Depository.FileSystem.Api
 {
@@ -79,6 +80,8 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
                 });
             });
 
+            services.AddServiceDiscovery();
+
             services.AddScoped<IFileSystemService, FileSystemService>();
             services.AddScoped<ICommonValidator, CommonValidator>();
             services.AddScoped<IProjectsService, ProjectsService>();
@@ -88,9 +91,12 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            var logger = loggerFactory.CreateLogger<Startup>();
+
             if (UseServiceDiscovery)
             {
-                RegisterClient();
+                var options = GetServiceDiscoveryOptions();
+                app.RegisterService(options);
             }
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
@@ -123,7 +129,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
             app.UseSwaggerUi();
         }
 
-        private void RegisterClient()
+        private ServiceDiscoveryOptions GetServiceDiscoveryOptions()
         {
             var serviceDiscoveryConfiguration = Configuration.GetSection("ServiceDiscovery");
 
@@ -131,17 +137,16 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
             var tagsSection = serviceDiscoveryConfiguration.GetSection("ServiceTags");
             tagsSection.Bind(tags);
 
-            var serviceDiscovery = new ServiceDiscoveryClient();
-            serviceDiscovery.Register((options) =>
-            {
-                options.ServiceOptions.Id = serviceDiscoveryConfiguration["ServiceId"];
-                options.ServiceOptions.Name = serviceDiscoveryConfiguration["ServiceName"];
-                options.ServiceOptions.Address = serviceDiscoveryConfiguration["ServiceAddress"];
-                options.ServiceOptions.Port = Convert.ToInt32(serviceDiscoveryConfiguration["ServicePort"]);
-                options.ServiceOptions.HttpHealthCheck = serviceDiscoveryConfiguration["ServiceHttpHealthCheck"];
-                options.ServiceOptions.Tags = tags;
-                options.ServerOptions.Address = serviceDiscoveryConfiguration["ServerAddress"];
-            });
+            var options = new ServiceDiscoveryOptions();
+            options.ServiceOptions.Id = serviceDiscoveryConfiguration["ServiceId"];
+            options.ServiceOptions.Name = serviceDiscoveryConfiguration["ServiceName"];
+            options.ServiceOptions.Address = serviceDiscoveryConfiguration["ServiceAddress"];
+            options.ServiceOptions.Port = Convert.ToInt32(serviceDiscoveryConfiguration["ServicePort"]);
+            options.ServiceOptions.HttpHealthCheck = serviceDiscoveryConfiguration["ServiceHttpHealthCheck"];
+            options.ServiceOptions.Tags = tags;
+            options.ServerOptions.Address = serviceDiscoveryConfiguration["ServerAddress"];
+
+            return options;
         }
     }
 }
