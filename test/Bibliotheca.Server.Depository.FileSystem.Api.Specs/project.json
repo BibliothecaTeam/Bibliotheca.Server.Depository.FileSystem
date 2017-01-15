@@ -16,7 +16,7 @@
     "xunit": "2.1.0",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "FluentBehave": "1.0.0-beta9",
-    "Bibliotheca.Server.Depository.Abstractions": "1.0.1",
+    "Bibliotheca.Server.Depository.Abstractions": "1.0.2",
     "Bibliotheca.Server.Depository.FileSystem.Api": "1.0.0"
   },
   "testRunner": "xunit",
