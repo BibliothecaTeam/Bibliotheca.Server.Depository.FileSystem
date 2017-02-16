@@ -13,6 +13,8 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
 
         Task DeleteFileAsync(string projectId, string branchName, string fileUri);
 
+        Task<IList<string>> GetFilesAsync(string projectId, string branchName);
+
         Task<IList<string>> GetFoldersAsync(string projectId);
 
         Task<IList<string>> GetFoldersAsync(string projectId, string branchName);

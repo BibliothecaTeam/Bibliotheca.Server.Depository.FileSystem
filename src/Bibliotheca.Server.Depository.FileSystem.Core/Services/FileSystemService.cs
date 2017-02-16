@@ -37,6 +37,23 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
             await DeleteFileAsync(path);
         }
 
+        public async Task<IList<string>> GetFilesAsync(string projectId, string branchName)
+        {
+            var folderPath = Path.Combine(_applicationParameters.ProjectsUrl, projectId, branchName);
+            var allfiles = await GetAllFilesAsync(folderPath);
+
+            int prefixLength = $"/{_applicationParameters.ProjectsUrl}/{projectId}/{branchName}/".Length;
+
+            var files = new List<string>();
+            foreach(var file in allfiles)
+            {
+                var fileUri = file.Substring(prefixLength - 1, (file.Length - prefixLength) + 1);
+                files.Add(fileUri);
+            }
+
+            return files;
+        }
+
         public async Task<IList<string>> GetFoldersAsync(string projectId)
         {
             return await GetFoldersAsync(projectId, string.Empty, string.Empty);
@@ -184,6 +201,14 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Services
             await Task.Run(() =>
             {
                 Directory.Delete(path, true);
+            });
+        }
+
+        private async Task<string[]> GetAllFilesAsync(string path)
+        {
+            return await Task.Run(() =>
+            {
+                return System.IO.Directory.GetFiles(path, "*.*", System.IO.SearchOption.AllDirectories);
             });
         }
 

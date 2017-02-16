@@ -7,7 +7,7 @@
   "dependencies": {
     "YamlDotNet": "4.0.0",
     "Bibliotheca.Server.Mvc.Middleware.Diagnostics": "1.0.3",
-    "Bibliotheca.Server.Depository.Abstractions": "1.0.3"
+    "Bibliotheca.Server.Depository.Abstractions": "1.0.6"
   },
   "frameworks": {
     "netstandard1.6": {

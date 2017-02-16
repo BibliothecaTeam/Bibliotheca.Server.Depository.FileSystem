@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
@@ -17,6 +18,13 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.Controllers
         public DocumentsController(IDocumentsService documentsService)
         {
             _documentsService = documentsService;
+        }
+
+        [HttpGet]
+        public async Task<IList<BaseDocumentDto>> Get(string projectId, string branchName)
+        {
+            var document = await _documentsService.GetDocumentsAsync(projectId, branchName);
+            return document;
         }
 
         [HttpGet("{fileUri}")]
