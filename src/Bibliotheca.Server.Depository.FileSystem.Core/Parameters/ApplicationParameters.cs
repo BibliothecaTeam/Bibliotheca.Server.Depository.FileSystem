@@ -9,5 +9,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.Parameters
         public string OAuthAudience { get; set; }
 
         public string ProjectsUrl { get; set; }
+
+        public ServiceDiscovery ServiceDiscovery { get; set; }
     }
 }
