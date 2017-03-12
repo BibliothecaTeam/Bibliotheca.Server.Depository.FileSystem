@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
-using Bibliotheca.Server.Depository.Abstractions.Exceptions;
-using Bibliotheca.Server.Depository.Abstractions.MimeTypes;
+using Bibliotheca.Server.Depository.FileSystem.Core.DataTransferObjects;
+using Bibliotheca.Server.Depository.FileSystem.Core.Exceptions;
+using Bibliotheca.Server.Depository.FileSystem.Core.MimeTypes;
 using Bibliotheca.Server.Depository.FileSystem.Core.Validators;
 
 namespace Bibliotheca.Server.Depository.FileSystem.Core.Services

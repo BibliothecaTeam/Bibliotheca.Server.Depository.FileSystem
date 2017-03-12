@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.FileSystem.Api.Specs.ApiClients;
 using System.Linq;
 using Xunit;
-using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 using System.Net;
+using Bibliotheca.Server.Depository.FileSystem.Core.DataTransferObjects;
 
 namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Projects
 {

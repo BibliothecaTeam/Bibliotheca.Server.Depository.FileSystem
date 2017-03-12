@@ -1,10 +1,10 @@
 using FluentBehave;
-using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 using Bibliotheca.Server.Depository.FileSystem.Api.Specs.ApiClients;
 using System.Threading.Tasks;
 using System.Linq;
 using Xunit;
 using System.Net;
+using Bibliotheca.Server.Depository.FileSystem.Core.DataTransferObjects;
 
 namespace Bibliotheca.Server.Depository.FileSystem.Api.Specs.Implementations.Branches
 {

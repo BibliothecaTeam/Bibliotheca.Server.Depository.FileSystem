@@ -1,12 +1,11 @@
 using FluentBehave;
-using System;
 using Bibliotheca.Server.Depository.FileSystem.Api.Specs.ApiClients;
-using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 using Xunit;
 using System.Net;
 using System.Threading.Tasks;
 using System.IO;
 using System.Linq;
+using Bibliotheca.Server.Depository.FileSystem.Core.DataTransferObjects;
 
 namespace test
 {
