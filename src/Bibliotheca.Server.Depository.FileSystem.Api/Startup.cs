@@ -1,7 +1,6 @@
 using Bibliotheca.Server.Depository.FileSystem.Core.Parameters;
 using Bibliotheca.Server.Depository.FileSystem.Core.Services;
 using Bibliotheca.Server.Depository.FileSystem.Core.Validators;
-using Bibliotheca.Server.Mvc.Middleware.Authorization;
 using Bibliotheca.Server.Mvc.Middleware.Diagnostics.Exceptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -17,6 +16,10 @@ using Bibliotheca.Server.ServiceDiscovery.ServiceClient.Extensions;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Bibliotheca.Server.Depository.FileSystem.Jobs;
+using Bibliotheca.Server.Mvc.Middleware.Authorization.SecureTokenAuthentication;
+using Bibliotheca.Server.Mvc.Middleware.Authorization.BearerAuthentication;
+using Bibliotheca.Server.Mvc.Middleware.Authorization.UserTokenAuthentication;
+using Bibliotheca.Server.Depository.FileSystem.Api.UserTokenAuthorization;
 
 namespace Bibliotheca.Server.Depository.FileSystem.Api
 {
@@ -88,6 +91,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
             services.AddServiceDiscovery();
 
             services.AddScoped<IServiceDiscoveryRegistrationJob, ServiceDiscoveryRegistrationJob>();
+            services.AddScoped<IUserTokenConfiguration, UserTokenConfiguration>();
 
             services.AddScoped<IFileSystemService, FileSystemService>();
             services.AddScoped<ICommonValidator, CommonValidator>();
@@ -125,6 +129,13 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
                 Realm = SecureTokenDefaults.Realm
             };
             app.UseSecureTokenAuthentication(secureTokenOptions);
+
+            var userTokenOptions = new UserTokenOptions
+            {
+                AuthenticationScheme = UserTokenDefaults.AuthenticationScheme,
+                Realm = UserTokenDefaults.Realm
+            };
+            app.UseUserTokenAuthentication(userTokenOptions);
 
             var jwtBearerOptions = new JwtBearerOptions
             {
