@@ -32,5 +32,7 @@ namespace Bibliotheca.Server.Depository.FileSystem.Core.DataTransferObjects
         public List<EditLinkDto> EditLinks { get; set; }
 
         public string AccessToken { get; set; }
+
+        public bool IsAccessLimited { get; set; }
     }
 }
