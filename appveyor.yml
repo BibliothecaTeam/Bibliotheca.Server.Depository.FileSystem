@@ -37,12 +37,10 @@ build: off
 before_build:
   - appveyor-retry dotnet restore "src\Bibliotheca.Server.Depository.FileSystem.Core" -v Minimal
   - appveyor-retry dotnet restore "src\Bibliotheca.Server.Depository.FileSystem.Api" -v Minimal
-  - appveyor-retry dotnet restore "test\Bibliotheca.Server.Depository.FileSystem.Api.Specs" -v Minimal
 
 build_script:
   - dotnet build "src\Bibliotheca.Server.Depository.FileSystem.Core" -c %CONFIGURATION%
   - dotnet build "src\Bibliotheca.Server.Depository.FileSystem.Api" -c %CONFIGURATION%
-  - dotnet build "test\Bibliotheca.Server.Depository.FileSystem.Api.Specs" -c %CONFIGURATION%
 
 #-----------------------------------------------------------------#
 # Test configuration.                                             #
