@@ -49,8 +49,4 @@ build_script:
 #-----------------------------------------------------------------#
 
 test: off
-
-test_script:
-  - cd "test\Bibliotheca.Server.Depository.FileSystem.Api.Specs"
-  - dotnet test -c %CONFIGURATION% --no-build
   

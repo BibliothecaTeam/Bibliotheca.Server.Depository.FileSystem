@@ -1,8 +1,0 @@
-site_name: ProejctC
-docs_dir: 'docs'
-
-pages:
-  - 'Introduction':
-    - 'Home': 'index.md'
-    - 'Part 1': 'part1.md'
-    - 'Part 2': 'part2.md'
