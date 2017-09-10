@@ -1,8 +1,10 @@
+using System.Linq;
 using Bibliotheca.Server.Depository.FileSystem.Core.Parameters;
 using Bibliotheca.Server.Mvc.Middleware.Authorization.UserTokenAuthentication;
-using Bibliotheca.Server.ServiceDiscovery.ServiceClient;
+using Flurl;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Neutrino.AspNetCore.Client;
 
 namespace Bibliotheca.Server.Depository.FileSystem.Api.UserTokenAuthorization
 {
@@ -13,20 +15,23 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.UserTokenAuthorization
     {
         private readonly ILogger<UserTokenConfiguration> _logger;
 
-        private readonly IServiceDiscoveryQuery _serviceDiscoveryQuery;
+        private readonly INeutrinoClient _neutrinoClient;
 
         IOptions<ApplicationParameters> _applicationParameters;
-
+        
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="logger">Logger.</param>
-        /// <param name="serviceDiscoveryQuery">Service discovery query.</param>
+        /// <param name="neutrinoClient">Service discovery query.</param>
         /// <param name="applicationParameters">Application parameters.</param>
-        public UserTokenConfiguration(ILogger<UserTokenConfiguration> logger, IServiceDiscoveryQuery serviceDiscoveryQuery, IOptions<ApplicationParameters> applicationParameters)
+        public UserTokenConfiguration(
+            ILogger<UserTokenConfiguration> logger, 
+            INeutrinoClient neutrinoClient, 
+            IOptions<ApplicationParameters> applicationParameters)
         {
             _logger = logger;
-            _serviceDiscoveryQuery = serviceDiscoveryQuery;
+            _neutrinoClient = neutrinoClient;
             _applicationParameters = applicationParameters;
         }
 
@@ -38,14 +43,11 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api.UserTokenAuthorization
         {
             _logger.LogInformation("Retrieving authorization url...");
 
-            var instance = _serviceDiscoveryQuery.GetServiceInstanceAsync(
-                new ServerOptions { Address = _applicationParameters.Value.ServiceDiscovery.ServerAddress },
-                new string[] { "heimdall" }
-            ).GetAwaiter().GetResult();
-
-            if (instance != null)
+            var services = _neutrinoClient.GetServicesByServiceTypeAsync("authorization").GetAwaiter().GetResult();
+            if (services != null && services.Count > 0)
             {
-                var address = $"http://{instance.Address}:{instance.Port}/api/";
+                var instance = services.FirstOrDefault();
+                var address = instance.Address.AppendPathSegment("api/");
                 _logger.LogInformation($"Authorization url was retrieved ({address}).");
 
                 return address;

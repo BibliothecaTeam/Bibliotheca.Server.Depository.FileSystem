@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Bibliotheca.Server.ServiceDiscovery.ServiceClient.Extensions;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Bibliotheca.Server.Depository.FileSystem.Jobs;
@@ -19,9 +18,10 @@ using Bibliotheca.Server.Mvc.Middleware.Authorization.SecureTokenAuthentication;
 using Bibliotheca.Server.Mvc.Middleware.Authorization.BearerAuthentication;
 using Bibliotheca.Server.Mvc.Middleware.Authorization.UserTokenAuthentication;
 using Bibliotheca.Server.Depository.FileSystem.Api.UserTokenAuthorization;
-using Microsoft.Extensions.PlatformAbstractions;
 using System.IO;
 using Swashbuckle.AspNetCore.Swagger;
+using Neutrino.AspNetCore.Client;
+using System.Linq;
 
 namespace Bibliotheca.Server.Depository.FileSystem.Api
 {
@@ -73,7 +73,8 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
             services.AddMvc(config =>
             {
                 var policy = new AuthorizationPolicyBuilder()
-                    .AddAuthenticationSchemes(SecureTokenDefaults.AuthenticationScheme)
+                    .AddAuthenticationSchemes(SecureTokenSchema.Name)
+                    .AddAuthenticationSchemes(UserTokenSchema.Name)
                     .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser()
                     .Build();
@@ -82,12 +83,33 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
                 options.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc;
             });
 
+            services.AddSingleton<ISecureTokenOptions>(new SecureTokenOptions { SecureToken = Configuration["SecureToken"] });
+            services.AddScoped<ISecureTokenAuthenticationHandler, SecureTokenAuthenticationHandler>();
+
+            services.AddScoped<IUserTokenConfiguration, UserTokenConfiguration>();
+            services.AddScoped<IUserTokenAuthenticationHandler, UserTokenAuthenticationHandler>();
+
+            services.AddAuthentication(configure => {
+                configure.AddScheme(SecureTokenSchema.Name, builder => {
+                    builder.DisplayName = SecureTokenSchema.Description;
+                    builder.HandlerType = typeof(ISecureTokenAuthenticationHandler);
+                });
+                configure.AddScheme(UserTokenSchema.Name, builder => {
+                    builder.DisplayName = UserTokenSchema.Description;
+                    builder.HandlerType = typeof(IUserTokenAuthenticationHandler);
+                });
+                configure.DefaultScheme = SecureTokenSchema.Name;
+            }).AddBearerAuthentication(options => {
+                options.Authority = Configuration["OAuthAuthority"];
+                options.Audience = Configuration["OAuthAudience"];
+            });
+
             services.AddApiVersioning(options =>
             {
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 options.DefaultApiVersion = new ApiVersion(1, 0);
                 options.ReportApiVersions = true;
-                options.ApiVersionReader = new QueryStringOrHeaderApiVersionReader("api-version");
+                options.ApiVersionReader = ApiVersionReader.Combine( new QueryStringApiVersionReader(), new HeaderApiVersionReader( "api-version" ));
             });
 
             services.AddSwaggerGen(options =>
@@ -100,12 +122,15 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
                     TermsOfService = "None"
                 });
 
-                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var basePath = System.AppContext.BaseDirectory;
                 var xmlPath = Path.Combine(basePath, "Bibliotheca.Server.Depository.FileSystem.Api.xml"); 
                 options.IncludeXmlComments(xmlPath);
             });
 
-            services.AddServiceDiscovery();
+            services.AddNeutrinoClient(options => {
+                options.SecureToken = Configuration["ServiceDiscovery:ServerSecureToken"];
+                options.Addresses = Configuration.GetSection("ServiceDiscovery:ServerAddresses").GetChildren().Select(x => x.Value).ToArray();
+            });
 
             services.AddScoped<IServiceDiscoveryRegistrationJob, ServiceDiscoveryRegistrationJob>();
             services.AddScoped<IUserTokenConfiguration, UserTokenConfiguration>();
@@ -145,29 +170,9 @@ namespace Bibliotheca.Server.Depository.FileSystem.Api
 
             app.UseCors("AllowAllOrigins");
 
-            var secureTokenOptions = new SecureTokenOptions
-            {
-                SecureToken = Configuration["SecureToken"],
-                AuthenticationScheme = SecureTokenDefaults.AuthenticationScheme,
-                Realm = SecureTokenDefaults.Realm
-            };
-            app.UseSecureTokenAuthentication(secureTokenOptions);
+            app.UseRewriteAccessTokenFronQueryToHeader();
 
-            var userTokenOptions = new UserTokenOptions
-            {
-                AuthenticationScheme = UserTokenDefaults.AuthenticationScheme,
-                Realm = UserTokenDefaults.Realm
-            };
-            app.UseUserTokenAuthentication(userTokenOptions);
-
-            var jwtBearerOptions = new JwtBearerOptions
-            {
-                Authority = Configuration["OAuthAuthority"],
-                Audience = Configuration["OAuthAudience"],
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true
-            };
-            app.UseBearerAuthentication(jwtBearerOptions);
+            app.UseAuthentication();
 
             app.UseMvc();
 
